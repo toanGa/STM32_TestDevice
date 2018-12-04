@@ -11,3 +11,18 @@ E:\ToanTV\STM\source\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.cspr
 E:\ToanTV\STM\source\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.CoreCompileInputs.cache
 E:\ToanTV\STM\source\STM_TestDevice\STM_TestDevice\bin\Debug\AgU3606B_3_09_3_00_3_04.xml
 E:\ToanTV\STM\source\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.CopyComplete
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\STM_TestDevice.exe.config
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\STM_TestDevice.exe
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\STM_TestDevice.pdb
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\AgU3606B_3_09_3_00_3_04.xml
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csprojAssemblyReference.cache
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.ResolveComReference.cache
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.Form1.resources
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.Properties.Resources.resources
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.GenerateResource.cache
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.CoreCompileInputs.cache
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.CopyComplete
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.exe
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.pdb
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.BatteryTest.resources
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.SinggleSetupControl.resources

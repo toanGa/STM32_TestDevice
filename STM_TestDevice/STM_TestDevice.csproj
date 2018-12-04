@@ -70,11 +70,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exporter\ExcelExporter.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Comm\SerialComm.cs" />
+    <Compile Include="Devices\Battery.cs" />
+    <Compile Include="Devices\Device.cs" />
+    <Compile Include="Devices\IDevice.cs" />
+    <Compile Include="ExcellUtils\DevicesParser.cs" />
+    <Compile Include="ExcellUtils\ExcelExporter.cs" />
+    <Compile Include="ExcellUtils\FileUtils.cs" />
+    <Compile Include="UI\BatteryTest.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="UI\BatteryTest.Designer.cs">
+      <DependentUpon>BatteryTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="GPIB\GPIBHelper.cs" />
@@ -89,9 +101,18 @@
     <Compile Include="Protocol\L2Process.cs" />
     <Compile Include="Protocol\RS232Connection.cs" />
     <Compile Include="Protocol\TCPIPConnection.cs" />
+    <Compile Include="UI\SinggleSetupControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SinggleSetupControl.Designer.cs">
+      <DependentUpon>SinggleSetupControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils\ThreadManager.cs" />
     <Compile Include="Utils\Util.cs" />
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="UI\BatteryTest.resx">
+      <DependentUpon>BatteryTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -104,6 +125,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="UI\SinggleSetupControl.resx">
+      <DependentUpon>SinggleSetupControl.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
