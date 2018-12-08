@@ -50,6 +50,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(968, 451);
             this.dataGridView1.TabIndex = 3;
+            this.dataGridView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dataGridView1_MouseDown);
             // 
             // SinggleSetupControl
             // 

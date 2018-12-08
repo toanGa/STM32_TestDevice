@@ -1,16 +1,18 @@
-﻿using STM_TestDevice.ExcellUtils;
+﻿using Microsoft.Office.Interop.Excel;
+using STM_TestDevice.ExcellUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace STM_TestDevice.Exporter
 {
-    class ExcelExporter
+    class ExcelExporter : Form
     {
         public string fileName;
 
@@ -24,11 +26,11 @@ namespace STM_TestDevice.Exporter
             this.fileName = fileName;
         }
 
-        public void Open()
+        public void OpenExcelFile()
         {
             if (FileUtils.IsOpen(fileName))
             {
-                Close();
+                CloseExcelFile();
             }
             try
             {
@@ -43,7 +45,7 @@ namespace STM_TestDevice.Exporter
             }
         }
 
-        public void Close()
+        public void CloseExcelFile()
         {
             try
             {
@@ -60,6 +62,89 @@ namespace STM_TestDevice.Exporter
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+        }
+
+        static public bool CreatReportFile(string fileName, string[] nameSheet)
+        {
+            if(nameSheet.Length == 0)
+            {
+                return false;
+            }
+
+            try
+            {
+                Microsoft.Office.Interop.Excel.Application xlApp = null;
+                Microsoft.Office.Interop.Excel.Workbook xlWorkBook = null;
+                Microsoft.Office.Interop.Excel.Worksheet xlWorkSheet = null;
+                object misValue = System.Reflection.Missing.Value;
+
+                xlApp = new Microsoft.Office.Interop.Excel.Application();
+                xlWorkBook = xlApp.Workbooks.Add(misValue);
+
+                for (int i = 0; i < nameSheet.Length; i++)
+                {
+                    xlWorkSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.Add();
+                    xlWorkSheet.Name = nameSheet[i];
+                    xlWorkSheet.Move(System.Reflection.Missing.Value, xlWorkBook.Sheets[xlWorkBook.Sheets.Count]);
+                }
+                Console.WriteLine("Delete default sheet: " + xlWorkBook.Worksheets[1].Name);
+                xlWorkBook.Worksheets[1].Delete();
+
+                xlWorkBook.SaveAs(fileName);
+                xlWorkBook.Close(true, misValue, misValue);
+                xlApp.Quit();
+
+                Marshal.ReleaseComObject(xlWorkSheet);
+                Marshal.ReleaseComObject(xlWorkBook);
+                Marshal.ReleaseComObject(xlApp);
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// re modify the chart with numbers of row changed
+        /// </summary>
+        /// <param name="numRows"></param>
+        /// <returns></returns>
+        public bool ModifyChart(int numRows)
+        {
+            try
+            {
+                object misValue = System.Reflection.Missing.Value;
+
+                // assign fomular for each sheet
+                for (int i = 2; i <= xlWorkBook.Worksheets.Count; i++)// sheet
+                {
+                    xlWorkSheet = xlWorkBook.Worksheets[i];
+
+                    // delete old chart
+                    ChartObjects objs = xlWorkSheet.ChartObjects();
+                    int chartCount = objs.Count;
+
+
+                    for(int j = 2; j <= chartCount; j++)
+                    {
+                        ChartObject currChartObj = objs.Item(j - 1);
+                        Microsoft.Office.Interop.Excel.Range chartRange;
+                        Microsoft.Office.Interop.Excel.Chart chartPage = currChartObj.Chart;
+
+                        chartRange = xlWorkSheet.Range[String.Format("A1:A{0},{1}1:{1}{0}", numRows + "", (char)((int)'A' + j - 1))];
+                        chartPage.SetSourceData(chartRange, misValue);
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
             }
         }
 
@@ -138,12 +223,14 @@ namespace STM_TestDevice.Exporter
 
             try
             {
-                if(String.IsNullOrEmpty(text))
+                //Microsoft.Office.Interop.Excel.Worksheet preActiveSheet = (Microsoft.Office.Interop.Excel.Worksheet)xlWorkBook.Worksheets.get_Item(sheetNum);
+
+                if (String.IsNullOrEmpty(text))
                 {
                     text = "NULL content";
                 }
-                Clipboard.SetText(text);
-                //xlApp.Visible = true;
+               
+                xlApp.Visible = true;
 
                 //~~> Add a new a workbook
                 //xlWorkBook = xlApp.Workbooks.Add(misValue);
@@ -159,7 +246,26 @@ namespace STM_TestDevice.Exporter
 
                 CR.Select();
 
+                //System.Threading.Thread.CurrentThread.TrySetApartmentState(System.Threading.ApartmentState.STA);
+
+                if (InvokeRequired)
+                {
+                    BeginInvoke((MethodInvoker)delegate
+                    {
+                        Clipboard.SetText(text);
+                    });
+                }
+                else
+                {
+                    Clipboard.SetText(text);
+                }
+
                 xlWorkSheet.Paste(CR, false);
+
+                // modify chart
+                int numsEnter = Regex.Matches(text, "\r\n").Count;
+
+                ModifyChart(numsEnter);
 
                 return true;
 

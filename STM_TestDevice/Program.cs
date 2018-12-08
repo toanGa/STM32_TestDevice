@@ -19,6 +19,7 @@ namespace STM_TestDevice
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
             batteryTest = new BatteryTest();
             Application.Run(batteryTest);
         }

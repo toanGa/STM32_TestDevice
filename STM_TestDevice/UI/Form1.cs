@@ -392,7 +392,7 @@ namespace STM_TestDevice
             string text = File.ReadAllText("LOG_1");
             ExcelExporter exp = new ExcelExporter(@"E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\result_battery.xlsx");
             exp.PasteText(text, 1, 1, 1);
-            exp.Close();
+            exp.CloseExcelFile();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

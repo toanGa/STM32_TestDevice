@@ -15,19 +15,24 @@ namespace STM_TestDevice.UI
     public partial class SinggleSetupControl : Form
     {
 
-        Device rootDevice;
+        Device mRootDevice;
+        ContextMenuStrip mRightClickMenuStrip = new ContextMenuStrip();
+
         public SinggleSetupControl(Device rootDevice, List<Device> listDevice)
         {
             InitializeComponent();
 
-            this.rootDevice = rootDevice;
+            mRightClickMenuStrip.Items.Add("Delete");
+            mRightClickMenuStrip.ItemClicked += rightClickMenuStrip_Click;
+
+            this.mRootDevice = rootDevice;
             if(rootDevice == null)
             {
                 return;
             }
             
             // set for header
-            foreach (string component in rootDevice.datas)
+            foreach (string component in rootDevice.gDatas)
             {
                 dataGridView1.Columns.Add(component, component);
             }
@@ -37,20 +42,41 @@ namespace STM_TestDevice.UI
             {
                 return;
             }
-            foreach(Device singgle in listDevice)
+
+            // assign name
+            this.Text = rootDevice.gCmdName;
+
+            foreach (Device singgle in listDevice)
             {
                 //listViewSetup.Items.Add(new ListViewItem(singgle.datas.ToArray(), setupGroup));
-                dataGridView1.Rows.Add(singgle.datas.ToArray());
+                dataGridView1.Rows.Add(singgle.gDatas.ToArray());
             }
         }
 
-        public string DeviceParser { get; private set; }
+        private void rightClickMenuStrip_Click(object sender, ToolStripItemClickedEventArgs e)
+        {
+            string itemString = ((ToolStripMenuItem)e.ClickedItem).ToString();
+            if(itemString == "Delete")
+            {
+                try
+                {
+                    int rowIdx = dataGridView1.CurrentCell.RowIndex;
+                    dataGridView1.Rows.RemoveAt(rowIdx);
+                }
+                catch
+                {
+
+                }
+            }
+
+        }
+
 
         // send command to STM device
         private void buttonSend_Click(object sender, EventArgs e)
         {
             // TODO: send to STM by UART
-            if(rootDevice != null)
+            if(mRootDevice != null)
             {
 
                 //string strSend = rootDevice.getHeaderSend(Battery.CMD_INIT_PRE, Battery.CMD_SEPERATE);
@@ -81,7 +107,7 @@ namespace STM_TestDevice.UI
                 //}
 
                 string strSend;
-                if(rootDevice.cmdValue == Battery.CMD_RUN)
+                if(mRootDevice.gCmdValue == Battery.CMD_RUN)
                 {
                     strSend = getRUNCommand();
                 }
@@ -89,30 +115,33 @@ namespace STM_TestDevice.UI
                 {
                     strSend = getNormalCommand();
                 }
+                strSend += Battery.CMD_END_COMMAND;
+
                 Program.batteryTest.WriteSerial(strSend);
+                Console.WriteLine(strSend);
             }
         }
 
         string getNormalCommand()
         {
-            string strSend = rootDevice.getHeaderSend(Battery.CMD_INIT_PRE, Battery.CMD_SEPERATE);
+            string strSend = mRootDevice.getHeaderSend(Battery.CMD_INIT_PRE, Battery.CMD_SEPERATE);
 
             int i;
 
             for (i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 Device sendDevice = new Device();
-                sendDevice.cmdName = rootDevice.cmdName;
-                sendDevice.cmdValue = rootDevice.cmdValue;
+                sendDevice.gCmdName = mRootDevice.gCmdName;
+                sendDevice.gCmdValue = mRootDevice.gCmdValue;
 
-                for (int j = 0; j < rootDevice.datas.Count; j++)
+                for (int j = 0; j < mRootDevice.gDatas.Count; j++)
                 {
                     if (dataGridView1.Rows[i].Cells[j].Value != null)
                     {
-                        sendDevice.datas.Add(dataGridView1.Rows[i].Cells[j].Value.ToString());
+                        sendDevice.gDatas.Add(dataGridView1.Rows[i].Cells[j].Value.ToString());
                     }
                 }
-                if (sendDevice.datas.Count == rootDevice.datas.Count)
+                if (sendDevice.gDatas.Count == mRootDevice.gDatas.Count)
                 {
                     string sendSTM = sendDevice.getCmdSend();
 
@@ -125,33 +154,45 @@ namespace STM_TestDevice.UI
 
         string getRUNCommand()
         {
-            string strSend = rootDevice.getHeaderSend(Battery.CMD_INIT_PRE, Battery.CMD_SEPERATE);
+            string strSend = mRootDevice.getHeaderSend(Battery.CMD_INIT_PRE, Battery.CMD_SEPERATE);
+            strSend += dataGridView1.Rows[0].Cells[0].Value;
             strSend += "@";
-            strSend += dataGridView1.Rows[1].Cells[0].Value;
+            
             int i;
 
             for (i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 Device sendDevice = new Device();
-                sendDevice.cmdName = rootDevice.cmdName;
-                sendDevice.cmdValue = rootDevice.cmdValue;
+                sendDevice.gCmdName = mRootDevice.gCmdName;
+                sendDevice.gCmdValue = mRootDevice.gCmdValue;
 
-                for (int j = 0; j < rootDevice.datas.Count; j++)
+                for (int j = 0; j < mRootDevice.gDatas.Count; j++)
                 {
                     if (dataGridView1.Rows[i].Cells[j].Value != null)
                     {
-                        sendDevice.datas.Add(dataGridView1.Rows[i].Cells[j].Value.ToString());
+                        sendDevice.gDatas.Add(dataGridView1.Rows[i].Cells[j].Value.ToString());
                     }
                 }
-                if (sendDevice.datas.Count == rootDevice.datas.Count)
+                if (sendDevice.gDatas.Count == mRootDevice.gDatas.Count)
                 {
-                    string sendSTM = "[" + sendDevice.datas[1] + "]";
+                    string sendSTM = "[" + sendDevice.gDatas[1] + "]";
 
                     //Program.batteryTest.WriteSerial(sendSTM);
                     strSend += sendSTM;
                 }
             }
             return strSend;
+        }
+
+        private void dataGridView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Right)
+            {
+                if(dataGridView1.Rows.Count > 1)
+                {
+                    mRightClickMenuStrip.Show(this, e.X, e.Y);
+                }
+            }
         }
     }
 }

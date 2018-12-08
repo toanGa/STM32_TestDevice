@@ -11,19 +11,19 @@ namespace STM_TestDevice.Devices
     /// </summary>
     public class Device
     {
-        public string cmdName;
-        public string cmdValue;
-        public List<string> datas = new List<string>();
+        public string gCmdName;
+        public string gCmdValue;
+        public List<string> gDatas = new List<string>();
 
         public virtual string getHeaderSend(string pre, string seprate)
         {
-            string headerString = pre + cmdValue + seprate;
+            string headerString = pre + gCmdValue + seprate;
             return headerString;
         }
 
         public virtual string getCmdSend()
         {
-            int numsData = datas.Count;
+            int numsData = gDatas.Count;
 
             string cmdString = "";
 
@@ -37,9 +37,9 @@ namespace STM_TestDevice.Devices
                 int i;
                 for (i = 0; i < numsData - 1; i++)
                 {
-                    cmdString += datas[i] + ",";
+                    cmdString += gDatas[i] + ",";
                 }
-                cmdString += datas[i];
+                cmdString += gDatas[i];
                 cmdString += "]";
             }
             else
@@ -47,7 +47,7 @@ namespace STM_TestDevice.Devices
                 // numsData = 1
                 if (numsData > 0)
                 {
-                    cmdString += datas[0];
+                    cmdString += gDatas[0];
                     cmdString += "]";
                 }
             }

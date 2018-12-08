@@ -20,31 +20,60 @@ namespace STM_TestDevice.UI
     {
         const string fileName = @"E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\ConfigBatery.xlsx";
         const string FILE_BUFFER = "LOG_BUFFER";
-        string mLogString = "";
+        string mtLogString = "";
 
+        string fileConfigBattery_Root = Application.StartupPath + @"\" + "ConfigBatery_Root.xlsx";
+        string fileResult_battery_Root = Application.StartupPath + @"\" + "result_battery_Root.xlsx";
+        
         List<Device> mDevices;
         DevicesParser mDevicesParser;
-        ExcelExporter mExcelExporter;
-        BackgroundWorker mFileSaveWorker = new BackgroundWorker();
-        ManualResetEvent mManualResetEvent = new ManualResetEvent(false);
-        StreamWriter mWriteBufferFile;
+        ExcelExporter mtExcelExporter;
 
+        BackgroundWorker mFileSaveWorker = new BackgroundWorker();
+        ManualResetEvent mFileSaveEvent = new ManualResetEvent(false);
+
+        BackgroundWorker mPasteExcellWorker = new BackgroundWorker();
+        ManualResetEvent mPasteExcelEvent = new ManualResetEvent(false);
+
+        ManualResetEvent mOpenFileSaveThreadEvent = new ManualResetEvent(false);
+        ManualResetEvent mOpenPasteExcellThredEvent = new ManualResetEvent(false);
+
+        StreamWriter mtWriteBufferFile;
+        
+        // Globle timer
+        public int gTimerDrawChart = 0;// 
+
+
+        /// <summary>
+        /// init form
+        /// </summary>
         public BatteryTest()
         {
             InitializeComponent();
 
-            comboBox1.Items.Clear();
-            comboBox1.DataSource = SerialPort.GetPortNames();
+            // conbobox
+            comboBoxControl.Items.Clear();
+            comboBoxControl.DataSource = SerialPort.GetPortNames();
 
-            if (comboBox1.Items.Count > 0)
+            if (comboBoxControl.Items.Count > 0)
             {
-                comboBox1.SelectedIndex = 0;
+                comboBoxControl.SelectedIndex = 0;
             }
-            
+
+            comboBoxData.Items.Clear();
+            comboBoxData.DataSource = SerialPort.GetPortNames();
+
+            if (comboBoxData.Items.Count > 0)
+            {
+                comboBoxData.SelectedIndex = 0;
+            }
+            // end of combobox setup
+
+            // clear button text
             for (int i = 1; i < 13; i++)
             {
                 Control currButton = GetControlByName("button" + i);
-                if(currButton != null)
+                if (currButton != null)
                 {
                     Button b = (Button)currButton;
                     b.Text = "";
@@ -61,6 +90,14 @@ namespace STM_TestDevice.UI
                 fs.Close();
             }
 
+            if (!File.Exists(getPathConfigFile()))
+            {
+                MessageBox.Show("Config file not exsited, auto generate config file");
+                File.Copy(fileConfigBattery_Root, getPathConfigFile());
+            }
+
+
+
             foreach (System.Diagnostics.Process myProc in System.Diagnostics.Process.GetProcesses())
             {
                 if (myProc.ProcessName == "EXCEL")
@@ -72,8 +109,7 @@ namespace STM_TestDevice.UI
 
             // setup stream writer
             // create stream overide old content of file
-            mWriteBufferFile = new StreamWriter(FILE_BUFFER);
-            mWriteBufferFile.AutoFlush = true;
+            mtWriteBufferFile = new StreamWriter(FILE_BUFFER);
 
             // background worker
             mFileSaveWorker.WorkerReportsProgress = true;
@@ -81,157 +117,35 @@ namespace STM_TestDevice.UI
             mFileSaveWorker.DoWork += fileSaveBackgroundWork;
             mFileSaveWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(WaitReportComplete);
             mFileSaveWorker.RunWorkerAsync();
+
+            mPasteExcellWorker.WorkerReportsProgress = true;
+            mPasteExcellWorker.WorkerSupportsCancellation = true;
+            mPasteExcellWorker.DoWork += pasteExcellBackgroundWork;
+            mPasteExcellWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(WaitReportComplete);
+            mPasteExcellWorker.RunWorkerAsync();
+
+            // init for test
+            if (!File.Exists(getPathReportFile()))
+            {
+                MessageBox.Show("Generate file not exsisted, Auto generate file");
+                File.Copy(fileResult_battery_Root, getPathReportFile());
+            }
         }
 
         /// <summary>
-        /// background save text
+        /// close form
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void fileSaveBackgroundWork(object sender, DoWorkEventArgs e)
+        private void BatteryTest_FormClosed(object sender, FormClosedEventArgs e)
         {
-            string saveString;
-            //if (mExcelExporter == null)
-            //{
-            //    mExcelExporter = new ExcelExporter(getPathReportFile());
-            //    mExcelExporter.Open();
-            //}
-
-            while(true)
-            {
-                mManualResetEvent.Reset();
-                mManualResetEvent.WaitOne();
-                
-                if (!String.IsNullOrEmpty(mLogString))
-                {
-                    if (InvokeRequired)
-                    {
-                        BeginInvoke((MethodInvoker)delegate
-                        {
-                            lock (mLogString)
-                            {
-                                saveString = mLogString;
-                            }
-                            //excelExporter.PasteText(saveString, 1, 1, 1);
-                            mWriteBufferFile.Write(saveString);
-                            mLogString = "";
-                        });
-                    }
-                    else
-                    {
-                        
-                        lock (mLogString)
-                        {
-                            saveString = mLogString;
-                        }
-                        //excelExporter.PasteText(saveString, 1, 1, 1);
-                        mWriteBufferFile.Write(saveString);
-                        mLogString = "";
-                    }
-                }
-                Thread.Sleep(1000);
-            }
-
-        }
-
-        private void WaitReportComplete(object sender, RunWorkerCompletedEventArgs e)
-        {
-
-        }
-
-        // Globle function
-        public void WriteSerial(string content)
-        {
-            try
-            {
-                serialPort.Write(content);
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        Control GetControlByName(string Name)
-        {
-            foreach (Control c in this.Controls)
-                if (c.Name == Name)
-                    return c;
-
-            return null;
-        }
-
-        Device getDeviceByName(string name)
-        {
-            foreach (Device d in mDevices)
-            {
-                if (d.cmdName == name)
-                {
-                    return d;
-                }
-            }
-            return null;
-        }
-        private string getPathConfigFile()
-        {
-            return Application.StartupPath + @"\" + textBoxConfigFile.Text;
-        }
-
-        private string getPathReportFile()
-        {
-            return Application.StartupPath + @"\" + textBoxReportFile.Text;
-        }
-
-        private void button_Click(object sender, EventArgs e)
-        {
-            //Console.WriteLine("OK");
-            Button b = sender as Button;
-            if(!String.IsNullOrEmpty(b.Text))
-            {
-                Device rootDevice = getDeviceByName(b.Text);
-                List<Device> listSetupDetail = mDevicesParser.ParseSetupData(rootDevice);
-                if(listSetupDetail != null)
-                {
-                    SinggleSetupControl singgleSetup = new SinggleSetupControl(rootDevice, listSetupDetail);
-                    singgleSetup.Show();
-                }
-            }
-        }
-        
-        /// <summary>
-        /// release all data when form close
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BatteryTest_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //try
-            //{
-            //    mFileSaveWorker.CancelAsync();
-            //    mWriteBufferFile.Close();
-
-            //    serialPort.Close();
-            //    string preCloseString = File.ReadAllText(FILE_BUFFER);
-            //    mExcelExporter.PasteText(preCloseString, 1, 1, 1);
-            //    mExcelExporter.Close();
-            //    mDevicesParser.Close();
-                  
-            //    if (String.IsNullOrEmpty(mLogString))
-            //    {
-            //        mExcelExporter.PasteText(mLogString, 1, 1, 1);
-            //    }
-            //}
-            //catch(Exception ex)
-            //{
-
-            //}
-
             // close thread background
             try
             {
                 mFileSaveWorker.CancelAsync();
+                mPasteExcellWorker.CancelAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -239,7 +153,7 @@ namespace STM_TestDevice.UI
             // close stream writer
             try
             {
-                mWriteBufferFile.Close();
+                mtWriteBufferFile.Close();
             }
             catch (Exception ex)
             {
@@ -249,7 +163,8 @@ namespace STM_TestDevice.UI
             // close serial port
             try
             {
-                serialPort.Close();
+                serialPortControl.Close();
+                serialPortData.Close();
             }
             catch (Exception ex)
             {
@@ -259,12 +174,22 @@ namespace STM_TestDevice.UI
             // close exporter
             try
             {
-                mExcelExporter = new ExcelExporter(getPathReportFile());
-                mExcelExporter.Open();
+                if (!File.Exists(getPathReportFile()))
+                {
+                    MessageBox.Show("Generate file not exsisted, Auto generate file");
+                    File.Copy(fileResult_battery_Root, getPathReportFile());
+                }
 
                 string preCloseString = File.ReadAllText(FILE_BUFFER);
-                mExcelExporter.PasteText(preCloseString, 1, 1, 1);
-                mExcelExporter.Close();
+
+                lock(mtExcelExporter)
+                {
+                    if(mtExcelExporter != null)
+                    {
+                        mtExcelExporter.PasteText(preCloseString, 1, 1, 1);
+                        mtExcelExporter.CloseExcelFile();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -281,17 +206,90 @@ namespace STM_TestDevice.UI
 
             }
         }
-        
-        private void buttonOpenCom_Click(object sender, EventArgs e)
+
+        // Globle function
+        public void WriteSerial(string content)
         {
-            if(serialPort.IsOpen)
+            try
+            {
+                serialPortControl.Write(content);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        // sub funtion
+        Control GetControlByName(string Name)
+        {
+            foreach (Control c in this.Controls)
+                if (c.Name == Name)
+                    return c;
+
+            return null;
+        }
+
+        Device getDeviceByName(string name)
+        {
+            foreach (Device d in mDevices)
+            {
+                if (d.gCmdName == name)
+                {
+                    return d;
+                }
+            }
+            return null;
+        }
+
+        private string getPathConfigFile()
+        {
+            return FileUtils.GetFullPath(textBoxConfigFile.Text);
+        }
+
+        private string getPathReportFile()
+        {
+            return FileUtils.GetFullPath(textBoxReportFile.Text);
+        }
+
+        // Event function
+
+        /// <summary>
+        /// control setup button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button_Click(object sender, EventArgs e)
+        {
+            //Console.WriteLine("OK");
+            Button b = sender as Button;
+            if (!String.IsNullOrEmpty(b.Text))
+            {
+                Device rootDevice = getDeviceByName(b.Text);
+                List<Device> listSetupDetail = mDevicesParser.ParseSetupData(rootDevice);
+                if (listSetupDetail != null)
+                {
+                    SinggleSetupControl singgleSetup = new SinggleSetupControl(rootDevice, listSetupDetail);
+                    singgleSetup.Show();
+                }
+            }
+        }
+
+        /// <summary>
+        /// open, close control COM
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonControlCom_Click(object sender, EventArgs e)
+        {
+            if (serialPortControl.IsOpen)
             {
                 try
                 {
-                    serialPort.Close();
-                    buttonOpenCom.Text = "Open";
+                    serialPortControl.Close();
+                    buttonControlCom.Text = "Open";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
@@ -300,11 +298,45 @@ namespace STM_TestDevice.UI
             {
                 try
                 {
-                    serialPort.PortName = comboBox1.SelectedItem.ToString();
-                    serialPort.Open();
-                    buttonOpenCom.Text = "Close";
+                    serialPortControl.PortName = comboBoxControl.SelectedItem.ToString();
+                    serialPortControl.Open();
+                    buttonControlCom.Text = "Close";
                 }
-                catch(Exception ex)
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Open, Close Data COM
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonDataCom_Click(object sender, EventArgs e)
+        {
+            if (serialPortData.IsOpen)
+            {
+                try
+                {
+                    serialPortData.Close();
+                    buttonDataCom.Text = "Open";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+            {
+                try
+                {
+                    serialPortData.PortName = comboBoxData.SelectedItem.ToString();
+                    serialPortData.Open();
+                    buttonDataCom.Text = "Close";
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
@@ -316,18 +348,20 @@ namespace STM_TestDevice.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void serialPortControl_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            // receive data here
-            string result = serialPort.ReadExisting();
-
-            // multithread acess logString
-            lock(mLogString)
+            string result = serialPortControl.ReadExisting();
+            if (InvokeRequired)
             {
-                mLogString += result;
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    richTextBoxDebug.AppendText(result);
+                });
             }
-
-            mManualResetEvent.Set();
+            else
+            {
+                richTextBoxDebug.AppendText(result);
+            }
         }
 
         /// <summary>
@@ -352,7 +386,7 @@ namespace STM_TestDevice.UI
             {
                 mDevicesParser.OpenUI();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -365,6 +399,10 @@ namespace STM_TestDevice.UI
         /// <param name="e"></param>
         private void buttonLoadConfig_Click(object sender, EventArgs e)
         {
+
+            //Battery.CreateReportFile(Application.StartupPath + "\\toan_creat_full.xlsx");
+            //return;
+
             if (mDevicesParser == null)
             {
                 mDevicesParser = new DevicesParser(getPathConfigFile());
@@ -387,9 +425,289 @@ namespace STM_TestDevice.UI
                 {
                     Button b = (Button)currButton;
                     //b.Click += button_Click;
-                    b.Text = mDevices[i].cmdName;
+                    b.Text = mDevices[i].gCmdName;
+                }
+            }
+
+            mOpenFileSaveThreadEvent.Set();
+            mOpenPasteExcellThredEvent.Set();
+
+            // disable change report file if thread is running
+            buttonOpenReportFile.Enabled = false;
+        }
+
+        /// <summary>
+        /// receive log data -> just copy data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void serialPortData_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            // receive data here
+            string result = serialPortData.ReadExisting();
+
+            // multithread acess logString
+            lock (mtLogString)
+            {
+                mtLogString += result;
+            }
+
+            mFileSaveEvent.Set();
+        }
+
+
+        /// <summary>
+        /// Test purpose
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonTest_Click(object sender, EventArgs e)
+        {
+            string pstr = "This is test\r\n and one test \r\n";
+            int idx = pstr.IndexOf("\r\n");
+            pstr.Replace("\r\n", "\r\n" + DateTime.Now + "\t");
+            //string modif;
+            //string buff;
+            //while (idx >= 0)
+            //{
+            //    modif = pstr.Insert(idx, DateTime.Now.ToString());
+            //    buff.Replace
+            //    idx = pstr.IndexOf("\r\n");
+            //}
+            
+
+            mPasteExcelEvent.Reset();
+            mPasteExcelEvent.Set();
+        }
+
+        /// <summary>
+        /// chang Timer update data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonTimerDrawChart_Click(object sender, EventArgs e)
+        {
+            if(timerUpdateData.Enabled == false)
+            {
+                return;
+            }
+
+            int parseValue = 0;
+            if (buttonChangeTimerDrawChart.Text == "Save")
+            {
+                if (int.TryParse(textBoxTimerDrawChart.Text, out parseValue))
+                {
+                    if(parseValue > 0)
+                    {
+                        gTimerDrawChart = parseValue;
+
+                        // if timer is running
+                        if(timerUpdateData.Enabled)
+                        {
+                            timerUpdateData.Enabled = false;
+                        }
+
+                        timerUpdateData.Interval = gTimerDrawChart * 1000;
+                        timerUpdateData.Enabled = true;
+                    }
+                    else if(parseValue == 0)
+                    {
+                        timerUpdateData.Enabled = false;
+                    }
+                }
+            }
+
+            if(parseValue < 0)
+            {
+                MessageBox.Show("Wrong text enter. Try again!");
+            }
+            else
+            {
+                buttonChangeTimerDrawChart.Text = "Change";
+            }
+        }
+
+        /// <summary>
+        /// action when change text
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void textBoxTimerDrawChart_TextChanged(object sender, EventArgs e)
+        {
+            buttonChangeTimerDrawChart.Text = "Save";
+        }
+
+        /// <summary>
+        /// timer update data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timerUpdateData_Tick(object sender, EventArgs e)
+        {
+            mPasteExcelEvent.Reset();
+            mPasteExcelEvent.Set();
+        }
+
+        private void comboBoxData_DropDown(object sender, EventArgs e)
+        {
+            comboBoxData.DataSource = null;
+            comboBoxData.Items.Clear();
+            comboBoxData.DataSource = SerialPort.GetPortNames();
+        }
+
+        private void comboBoxControl_DropDown(object sender, EventArgs e)
+        {
+            comboBoxControl.DataSource = null;
+            comboBoxControl.Items.Clear();
+            comboBoxControl.DataSource = SerialPort.GetPortNames();
+        }
+
+        /// <summary>
+        /// create report file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonReportFile_Click(object sender, EventArgs e)
+        {
+            int parseValue = 0;
+            bool rstReport;
+
+            if (!int.TryParse(textBoxNumsRowCreate.Text, out parseValue))
+            {
+                MessageBox.Show("Invalid text input");
+                return;
+            }
+            if(parseValue <= 0)
+            {
+                MessageBox.Show("Invalid text input");
+                return;
+            }
+
+            Battery.gNumsRow = parseValue;
+            if (File.Exists(textBoxGenReportFile.Text))
+            {
+                MessageBox.Show("File exsited!", "Warning!");
+            }
+            else
+            {
+                rstReport = Battery.CreateReportFile(textBoxGenReportFile.Text);
+                //rstReport = Battery.CreateChartForFile(textBoxGenReportFile.Text);
+                if (rstReport)
+                {
+                    MessageBox.Show("Reported file success");
+                }
+                else
+                {
+                    MessageBox.Show("Reported file fail");
                 }
             }
         }
+
+        /// <summary>
+        /// fomat chart for a file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonFomatChart_Click(object sender, EventArgs e)
+        {
+            string path = FileUtils.GetFullPath(textBoxFomatChart.Text);
+            Battery.CreateChartForFile(path);
+        }
+        
+        /// <summary>
+        /// enable or disable auto draw chart
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void checkBoxAutoDrawChart_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox c = sender as CheckBox;
+
+            if(c.Checked)
+            {
+                timerUpdateData.Enabled = true;
+            }
+            else
+            {
+                timerUpdateData.Enabled = false;
+            }
+        }
+        
+        private void buttonChangeConfigFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                //InitialDirectory = @"D:\",
+                Title = "Open Config file",
+
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "txt",
+                Filter = "Excel Files (*.xlsx, *.xls)|*.xlsx;*.xls",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+            };
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                textBoxConfigFile.Text = openFileDialog1.FileName;
+            }
+        }
+
+        private void buttonOpenReportFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                //InitialDirectory = @"D:\",
+                Title = "Open Report file",
+
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "txt",
+                Filter = "Excel Files (*.xlsx, *.xls)|*.xlsx;*.xls",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+            };
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                textBoxReportFile.Text = openFileDialog1.FileName;
+            }
+        }
+
+        private void buttonOpenFileFomatChart_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                //InitialDirectory = @"D:\",
+                Title = "Open file to fomat chart",
+
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "txt",
+                Filter = "Excel Files (*.xlsx, *.xls)|*.xlsx;*.xls",
+                FilterIndex = 2,
+                RestoreDirectory = true,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+            };
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                textBoxFomatChart.Text = openFileDialog1.FileName;
+            }
+        }
+
+
     }
 }

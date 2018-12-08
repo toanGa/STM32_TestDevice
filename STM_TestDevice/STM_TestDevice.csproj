@@ -33,7 +33,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\TestDebug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -75,13 +75,18 @@
     <Compile Include="Devices\Device.cs" />
     <Compile Include="Devices\IDevice.cs" />
     <Compile Include="ExcellUtils\DevicesParser.cs" />
-    <Compile Include="ExcellUtils\ExcelExporter.cs" />
+    <Compile Include="ExcellUtils\ExcelExporter.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ExcellUtils\FileUtils.cs" />
     <Compile Include="UI\BatteryTest.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\BatteryTest.Designer.cs">
       <DependentUpon>BatteryTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\BatteryTest_WorkerDo.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\Form1.cs">
       <SubType>Form</SubType>
@@ -170,6 +175,14 @@
     </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

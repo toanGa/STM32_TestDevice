@@ -15,7 +15,7 @@ namespace STM_TestDevice.ExcellUtils
     {
         const string CMD_NAME = "CMD NAME";
         const string SETUP = "SETUP";
-        public string excellFileName;
+        public string mExcellFileName;
         
         Application xlApp;
         Workbook xlWorkBook;
@@ -23,9 +23,8 @@ namespace STM_TestDevice.ExcellUtils
 
         public DevicesParser(string excellFileName)
         {
-            this.excellFileName = excellFileName;
+            this.mExcellFileName = excellFileName;
         }
-
 
         public bool Open()
         {
@@ -34,7 +33,7 @@ namespace STM_TestDevice.ExcellUtils
                 try
                 {
                     xlApp = new Application();
-                    xlWorkBook = xlApp.Workbooks.Open(excellFileName);
+                    xlWorkBook = xlApp.Workbooks.Open(mExcellFileName);
                     xlWorkSheet = (Worksheet)xlWorkBook.Worksheets.get_Item(1);
                 }
                 catch (Exception ex)
@@ -43,6 +42,11 @@ namespace STM_TestDevice.ExcellUtils
                 }
 
                 return true;
+            }
+            else
+            {
+                xlWorkBook = xlApp.Workbooks.Open(mExcellFileName);
+                xlWorkSheet = (Worksheet)xlWorkBook.Worksheets.get_Item(1);
             }
             return true;
         }
@@ -59,12 +63,14 @@ namespace STM_TestDevice.ExcellUtils
                     Marshal.ReleaseComObject(xlWorkSheet);
                     Marshal.ReleaseComObject(xlWorkBook);
                     Marshal.ReleaseComObject(xlApp);
+
+                    xlApp = null;
                 }
                 catch (Exception ex)
                 {
                     //throw ex;
                 }
-
+                
                 return true;
             }
             return true;
@@ -72,18 +78,19 @@ namespace STM_TestDevice.ExcellUtils
 
         public bool IsOpen()
         {
-            try
-            {
-                Stream s = File.Open(excellFileName, FileMode.Open, FileAccess.Read, FileShare.None);
+            return (xlApp != null);
+            //try
+            //{
+            //    Stream s = File.Open(excellFileName, FileMode.Open, FileAccess.Read, FileShare.None);
 
-                s.Close();
+            //    s.Close();
 
-                return false;
-            }
-            catch (Exception)
-            {
-               return true;
-            }
+            //    return false;
+            //}
+            //catch (Exception)
+            //{
+            //   return true;
+            //}
         }       
 
         public void OpenUI()
@@ -166,9 +173,9 @@ namespace STM_TestDevice.ExcellUtils
                     listData.Add(tmpColVal);
                 }
 
-                tmpDevice.cmdName = currCmdName;
-                tmpDevice.cmdValue = currCmdValue;
-                tmpDevice.datas = listData;
+                tmpDevice.gCmdName = currCmdName;
+                tmpDevice.gCmdValue = currCmdValue;
+                tmpDevice.gDatas = listData;
 
                 listDevice.Add(tmpDevice);
 
@@ -215,7 +222,7 @@ namespace STM_TestDevice.ExcellUtils
             {
                 //tmpStr = (string)(xlWorkSheet.Cells[i + 1, 1] as Microsoft.Office.Interop.Excel.Range).Value;
                 tmpStr = getCellValue(xlWorkSheet, i + 1, 1);
-                if (tmpStr == rootDevice.cmdName)
+                if (tmpStr == rootDevice.gCmdName)
                 {
                     rowStartCmd = i + 1;
 
@@ -241,15 +248,15 @@ namespace STM_TestDevice.ExcellUtils
                 {
                     break;
                 }
-                rowParsEnd = rowParsCmd + rootDevice.datas.Count;
+                rowParsEnd = rowParsCmd + rootDevice.gDatas.Count;
                 tmpDevice = new Device();
                 for (int i = rowParsCmd; i < rowParsEnd; i++)
                 {
-                    tmpDevice.cmdName = rootDevice.cmdName;
-                    tmpDevice.cmdValue = rootDevice.cmdValue;
+                    tmpDevice.gCmdName = rootDevice.gCmdName;
+                    tmpDevice.gCmdValue = rootDevice.gCmdValue;
                     tmpStr = getCellValue(xlWorkSheet, rowParsCmd, colCurr);
 
-                    tmpDevice.datas.Add(tmpStr);
+                    tmpDevice.gDatas.Add(tmpStr);
                     rowParsCmd++;
                 }
 
