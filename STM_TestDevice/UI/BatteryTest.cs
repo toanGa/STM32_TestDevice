@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,6 +22,7 @@ namespace STM_TestDevice.UI
         const string fileName = @"E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\ConfigBatery.xlsx";
         const string FILE_BUFFER = "LOG_BUFFER";
         string mtLogString = "";
+        string mtUpdateBatStatUI = "";
 
         string fileConfigBattery_Root = Application.StartupPath + @"\" + "ConfigBatery_Root.xlsx";
         string fileResult_battery_Root = Application.StartupPath + @"\" + "result_battery_Root.xlsx";
@@ -28,16 +30,25 @@ namespace STM_TestDevice.UI
         List<Device> mDevices;
         DevicesParser mDevicesParser;
         ExcelExporter mtExcelExporter;
-
+        List<Battery> mtListBatStat = new List<Battery>();
+        // background woker
         BackgroundWorker mFileSaveWorker = new BackgroundWorker();
         ManualResetEvent mFileSaveEvent = new ManualResetEvent(false);
 
         BackgroundWorker mPasteExcellWorker = new BackgroundWorker();
         ManualResetEvent mPasteExcelEvent = new ManualResetEvent(false);
 
+        BackgroundWorker mUpdateBatStatUIWoker = new BackgroundWorker();
+        ManualResetEvent mUpdateBatStatUIEvent = new ManualResetEvent(false);
+
+        // first condition worker run
         ManualResetEvent mOpenFileSaveThreadEvent = new ManualResetEvent(false);
         ManualResetEvent mOpenPasteExcellThredEvent = new ManualResetEvent(false);
+        ManualResetEvent mOpenUpdateBatStatUIThredEvent = new ManualResetEvent(false);
 
+        /// <summary>
+        /// stream writer to write file
+        /// </summary>
         StreamWriter mtWriteBufferFile;
         
         // Globle timer
@@ -80,6 +91,12 @@ namespace STM_TestDevice.UI
                 }
             }
 
+            // init list battery
+            for(int i = 0; i < Battery.NUMS_BATTERY; i++)
+            {
+                mtListBatStat.Add(new Battery());
+            }
+            
             //oldTextContent = File.ReadAllText(FILE_BUFFER);
             //ExcelExporter exp = new ExcelExporter(getPathReportFile());
             //exp.PasteText(oldTextContent, 1, 1, 1);
@@ -124,6 +141,12 @@ namespace STM_TestDevice.UI
             mPasteExcellWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(WaitReportComplete);
             mPasteExcellWorker.RunWorkerAsync();
 
+            mUpdateBatStatUIWoker.WorkerReportsProgress = true;
+            mUpdateBatStatUIWoker.WorkerSupportsCancellation = true;
+            mUpdateBatStatUIWoker.DoWork += UpdateBatStatUIdWork;
+            mUpdateBatStatUIWoker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(WaitReportComplete);
+            mUpdateBatStatUIWoker.RunWorkerAsync();
+
             // init for test
             if (!File.Exists(getPathReportFile()))
             {
@@ -144,6 +167,7 @@ namespace STM_TestDevice.UI
             {
                 mFileSaveWorker.CancelAsync();
                 mPasteExcellWorker.CancelAsync();
+                mUpdateBatStatUIWoker.CancelAsync();
             }
             catch (Exception ex)
             {
@@ -431,6 +455,7 @@ namespace STM_TestDevice.UI
 
             mOpenFileSaveThreadEvent.Set();
             mOpenPasteExcellThredEvent.Set();
+            mOpenUpdateBatStatUIThredEvent.Set();
 
             // disable change report file if thread is running
             buttonOpenReportFile.Enabled = false;
@@ -446,13 +471,22 @@ namespace STM_TestDevice.UI
             // receive data here
             string result = serialPortData.ReadExisting();
 
-            // multithread acess logString
-            lock (mtLogString)
+            if(mDevicesParser != null)
             {
-                mtLogString += result;
+                // multithread acess logString
+                lock (mtLogString)
+                {
+                    mtLogString += result;
+                }
+
+                mFileSaveEvent.Set();
             }
 
-            mFileSaveEvent.Set();
+            lock(mtUpdateBatStatUI)
+            {
+                mtUpdateBatStatUI += result;
+                mUpdateBatStatUIEvent.Set();
+            }
         }
 
 
@@ -463,19 +497,17 @@ namespace STM_TestDevice.UI
         /// <param name="e"></param>
         private void buttonTest_Click(object sender, EventArgs e)
         {
-            string pstr = "This is test\r\n and one test \r\n";
-            int idx = pstr.IndexOf("\r\n");
-            pstr.Replace("\r\n", "\r\n" + DateTime.Now + "\t");
-            //string modif;
-            //string buff;
-            //while (idx >= 0)
-            //{
-            //    modif = pstr.Insert(idx, DateTime.Now.ToString());
-            //    buff.Replace
-            //    idx = pstr.IndexOf("\r\n");
-            //}
-            
+            string testSub = textBoxTest.Text;
+            string[] sub = Regex.Split(testSub, "\t");
 
+            List<Battery> lBat = new List<Battery>();
+            for(int i = 0; i < 12; i++)
+            {
+                lBat.Add(new Battery());
+            }
+
+            Battery.ParseParameter(textBoxTest.Text, ref lBat);
+            
             mPasteExcelEvent.Reset();
             mPasteExcelEvent.Set();
         }

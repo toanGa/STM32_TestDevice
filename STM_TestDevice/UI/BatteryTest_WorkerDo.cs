@@ -1,4 +1,5 @@
-﻿using STM_TestDevice.Exporter;
+﻿using STM_TestDevice.Devices;
+using STM_TestDevice.Exporter;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -188,6 +189,98 @@ namespace STM_TestDevice.UI
                 }
             }
         }
+
+        /// <summary>
+        /// update ui when detect bat state change
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateBatStatUIdWork(object sender, DoWorkEventArgs e)
+        {
+            // waite for user trully open
+            mOpenUpdateBatStatUIThredEvent.Reset();
+            mOpenUpdateBatStatUIThredEvent.WaitOne();
+
+            string updateUIString = "";
+            string tmpString = "";
+
+            List<Battery> oldState;
+            string[] revStrings;
+            int idxNotEmpty;
+
+            oldState = new List<Battery>();
+            for(int i = 0; i < Battery.NUMS_BATTERY; i++)
+            {
+                oldState.Add(new Battery());
+            }
+
+            while (true)
+            {
+                mUpdateBatStatUIEvent.Reset();
+                mUpdateBatStatUIEvent.WaitOne();
+
+                lock(mtUpdateBatStatUI)
+                {
+                    tmpString = mtUpdateBatStatUI;
+                    // clean data after process done
+                    mtUpdateBatStatUI = "";
+                }
+                updateUIString += tmpString;
+
+                // detect new string by \r\n
+                revStrings = Regex.Split(updateUIString, "\r\n");
+                idxNotEmpty = 0;
+                for(int i = 0; i < revStrings.Length; i++)
+                {
+                    if(!String.IsNullOrEmpty(revStrings[i]))
+                    {
+                        idxNotEmpty = i;
+                    }
+                }
+
+                lock(mtListBatStat)
+                {
+                    for(int i = 0; i < Battery.NUMS_BATTERY; i++)
+                    {
+                        oldState[i].gParameter = mtListBatStat[i].gParameter;
+                    }
+
+                    Battery.ParseParameter(revStrings[idxNotEmpty], ref mtListBatStat);
+
+                    // compare single param
+                    for(int i = 0; i < mtListBatStat.Count; i++)
+                    {
+                        if(oldState[i].gParameter.stateOfBat != mtListBatStat[i].gParameter.stateOfBat
+                            || (oldState[i].gParameter.resOfBat != mtListBatStat[i].gParameter.resOfBat)
+                            
+                            )
+                        {
+                            string resShow = String.Format("{0}\t Bat {1}\t State {2}\t Vol {3}\t Res {4}\n",
+                                "[" + DateTime.Now + "]", i + "", mtListBatStat[i].gParameter.stateOfBat, 
+                                mtListBatStat[i].gParameter.volOfBat, mtListBatStat[i].gParameter.resOfBat);
+
+                            if (InvokeRequired)
+                            {
+                                BeginInvoke((MethodInvoker)delegate
+                                {
+                                    textBoxLogStatusBat.AppendText(resShow);
+                                });
+                            }
+                            else
+                            {
+                                textBoxLogStatusBat.AppendText(resShow);
+                            }
+                        }
+                    }
+                }
+                
+                
+                // check some parameter has changed
+
+                // update ui
+            }
+        }
+
 
         private void WaitReportComplete(object sender, RunWorkerCompletedEventArgs e)
         {

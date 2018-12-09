@@ -29,3 +29,15 @@ E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\TestDebug\STM_
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\TestDebug\STM_TestDevice.exe
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\TestDebug\STM_TestDevice.pdb
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\TestDebug\AgU3606B_3_09_3_00_3_04.dll
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\bin\Debug\TestDebug\STM_TestDevice.exe.config
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\bin\Debug\TestDebug\STM_TestDevice.exe
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\bin\Debug\TestDebug\STM_TestDevice.pdb
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\bin\Debug\TestDebug\AgU3606B_3_09_3_00_3_04.dll
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.BatteryTest.resources
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.Properties.Resources.resources
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.SinggleSetupControl.resources
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.GenerateResource.Cache
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.CoreCompileInputs.cache
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.exe
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.pdb
+E:\TOAN\STM\4. C# code\STM32_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csprojResolveAssemblyReference.cache

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,10 +14,28 @@ namespace STM_TestDevice.Devices
 {
     class Battery
     {
-        /* max battery */
-        const int NUMS_BATTERY = 12;
-        public static int gNumsRow = 100;
+        // numsParam = 
+        public struct Parameter
+        {
+            public double temperate;
+            public double remainCapacity;
+            public double volOfBat;
+            public double avgCurrent;
+            public double batPercent;
+            public int stateOfBat;
+            public int numberOfRun;
+            public double resOfBat;
+            public int idxBat;
+        }
 
+        /* max battery */
+        public const int NUMS_BATTERY = 12;
+        const int NUMS_BAT_PARAM = 9; // ref Parameter
+
+        /* Public definition */
+        public static int gNumsRow = 100;
+        public Parameter gParameter;
+        
         #region command init parameter
         public const string CMD_INIT_PRE        = "!#";
         public const string CMD_END_COMMAND     = "\r\n";
@@ -219,6 +238,69 @@ namespace STM_TestDevice.Devices
             }
         }
 
+        public static bool ParseParameter(string input, ref List<Battery> listBattery)
+        {
+            string filterString = input.Substring(input.IndexOf("\t") + 1).Replace("\r\n", "");
+            string[] listParamSeq = Regex.Split(filterString, "\t");
+
+            for(int i = 0; i < listBattery.Count; i++)
+            {
+                listBattery[i].gParameter = default(Parameter);
+            }
+            
+            for(int i = 0; i < listParamSeq.Length; i++)
+            {
+                int idxBat = (i) / NUMS_BAT_PARAM;
+                int idxParam = (i) % NUMS_BAT_PARAM;
+
+                //public struct Parameter
+                //{
+                //    double temperate;
+                //    double remainCapacity;
+                //    double volOfBat;
+                //    double avgCurrent;
+                //    double batPercent;
+                //    StateOfBat stateOfBat;
+                //    int numberOfRun;
+                //    double resOfBat;
+                //}
+
+                listBattery[idxBat].gParameter.idxBat = idxBat;
+                switch (idxParam)
+                {
+                    case 0:
+                         double.TryParse(listParamSeq[i],out listBattery[idxBat].gParameter.temperate);
+                        break;
+                    case 1:
+                        double.TryParse(listParamSeq[i], out listBattery[idxBat].gParameter.remainCapacity);
+                        break;
+                    case 2:
+                        double.TryParse(listParamSeq[i], out listBattery[idxBat].gParameter.volOfBat);
+                        break;
+                    case 3:
+                        double.TryParse(listParamSeq[i], out listBattery[idxBat].gParameter.avgCurrent);
+                        break;
+                    case 4:
+                        double.TryParse(listParamSeq[i], out listBattery[idxBat].gParameter.batPercent);
+                        break;
+                    case 5:
+                        int.TryParse(listParamSeq[i], out listBattery[idxBat].gParameter.stateOfBat);
+                        break;
+                    case 6:
+                        int.TryParse(listParamSeq[i], out listBattery[idxBat].gParameter.numberOfRun);
+                        break;
+                    case 7:
+                        double.TryParse(listParamSeq[i], out listBattery[idxBat].gParameter.resOfBat);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return true;
+        }
+
+        /* Private function */
         static string getExtractString(string worksheetRoot, int rowSheet, int colRoot)
         {            
             string nameSheetModify = "'" + worksheetRoot + "'";
@@ -226,5 +308,7 @@ namespace STM_TestDevice.Devices
 
             return String.Format(@"=IF(EXACT({0}!{1},""""),"""",{0}!{1})", nameSheetModify, detail);
         }
+
+
     }
 }
