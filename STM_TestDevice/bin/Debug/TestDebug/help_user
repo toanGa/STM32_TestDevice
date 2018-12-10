@@ -1,0 +1,8 @@
+1. In the main tab
+	- Choose "Control COM" to control board test PIN and get log debug
+	- Choose "Data COM" to get log data from board
+	- Click "Load Config" to load config before test from file config
+	- Click "View Config" to view and edit instance config
+2. After load config and open COM, the button control then show the control user want to control
+3. The file report will be configured in the tab setting
+3. The file report status Battery changed will be auto generate in Foder "ResuleTest", the name file is time current run 

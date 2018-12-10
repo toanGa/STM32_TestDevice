@@ -26,6 +26,11 @@ namespace STM_TestDevice.Devices
             public int numberOfRun;
             public double resOfBat;
             public int idxBat;
+
+            public override string ToString()
+            {
+                return String.Format("State:{0}\tVol:{1}\tAvgCurr:{2}\tRes:{3}\tNumberRun:{4}", stateOfBat, volOfBat, avgCurrent, resOfBat, numberOfRun);
+            }
         }
 
         /* max battery */

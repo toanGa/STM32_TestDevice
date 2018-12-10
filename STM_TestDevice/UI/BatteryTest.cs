@@ -21,6 +21,9 @@ namespace STM_TestDevice.UI
     {
         const string fileName = @"E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\ConfigBatery.xlsx";
         const string FILE_BUFFER = "LOG_BUFFER";
+        const string FODER_RESULT = "ResultTest";
+        const string HELP_FILE = "help_user";
+
         string mtLogString = "";
         string mtUpdateBatStatUI = "";
 
@@ -50,7 +53,7 @@ namespace STM_TestDevice.UI
         /// stream writer to write file
         /// </summary>
         StreamWriter mtWriteBufferFile;
-        
+        StreamWriter mWriteResuleBat;
         // Globle timer
         public int gTimerDrawChart = 0;// 
 
@@ -97,6 +100,12 @@ namespace STM_TestDevice.UI
                 mtListBatStat.Add(new Battery());
             }
             
+            // init Help
+            if(File.Exists(FileUtils.GetFullPath(HELP_FILE)))
+            {
+                textBoxHelp.Text = File.ReadAllText(FileUtils.GetFullPath(HELP_FILE));
+            }
+
             //oldTextContent = File.ReadAllText(FILE_BUFFER);
             //ExcelExporter exp = new ExcelExporter(getPathReportFile());
             //exp.PasteText(oldTextContent, 1, 1, 1);
@@ -127,6 +136,19 @@ namespace STM_TestDevice.UI
             // setup stream writer
             // create stream overide old content of file
             mtWriteBufferFile = new StreamWriter(FILE_BUFFER);
+            DateTime dtNow = DateTime.Now;
+            string fileGen = FODER_RESULT + "/" + dtNow.Year + "-" + dtNow.Month + "-" + dtNow.Day + "_" + dtNow.Hour + "h" + dtNow.Minute + "m" + dtNow.Second + "s";
+            if(!Directory.Exists(FODER_RESULT))
+            {
+                Directory.CreateDirectory(FODER_RESULT);
+            }
+            if (!File.Exists(fileGen))
+            {
+                FileStream fs = File.Create(fileGen);
+                fs.Close();
+            }
+            mWriteResuleBat = new StreamWriter(fileGen);
+            mWriteResuleBat.AutoFlush = true;
 
             // background worker
             mFileSaveWorker.WorkerReportsProgress = true;
@@ -143,7 +165,7 @@ namespace STM_TestDevice.UI
 
             mUpdateBatStatUIWoker.WorkerReportsProgress = true;
             mUpdateBatStatUIWoker.WorkerSupportsCancellation = true;
-            mUpdateBatStatUIWoker.DoWork += UpdateBatStatUIdWork;
+            mUpdateBatStatUIWoker.DoWork += UpdateBatStatUIWork;
             mUpdateBatStatUIWoker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(WaitReportComplete);
             mUpdateBatStatUIWoker.RunWorkerAsync();
 
@@ -178,6 +200,7 @@ namespace STM_TestDevice.UI
             try
             {
                 mtWriteBufferFile.Close();
+                mWriteResuleBat.Close();
             }
             catch (Exception ex)
             {
@@ -206,9 +229,9 @@ namespace STM_TestDevice.UI
 
                 string preCloseString = File.ReadAllText(FILE_BUFFER);
 
-                lock(mtExcelExporter)
+                if (mtExcelExporter != null)
                 {
-                    if(mtExcelExporter != null)
+                    lock (mtExcelExporter)
                     {
                         mtExcelExporter.PasteText(preCloseString, 1, 1, 1);
                         mtExcelExporter.CloseExcelFile();

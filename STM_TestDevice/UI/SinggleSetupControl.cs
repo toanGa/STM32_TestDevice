@@ -45,6 +45,10 @@ namespace STM_TestDevice.UI
 
             // assign name
             this.Text = rootDevice.gCmdName;
+            if(rootDevice.gCmdName == "Cài đặt trạng thái Battery")
+            {
+                lbNote.Text = "bat_control:\n1. BAT_SET_FREE\n2.BAT_DISCHARGE\n3.BAT_CHARGE";
+            }
 
             foreach (Device singgle in listDevice)
             {

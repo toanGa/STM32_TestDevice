@@ -195,7 +195,7 @@ namespace STM_TestDevice.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UpdateBatStatUIdWork(object sender, DoWorkEventArgs e)
+        private void UpdateBatStatUIWork(object sender, DoWorkEventArgs e)
         {
             // waite for user trully open
             mOpenUpdateBatStatUIThredEvent.Reset();
@@ -225,59 +225,74 @@ namespace STM_TestDevice.UI
                     // clean data after process done
                     mtUpdateBatStatUI = "";
                 }
+
                 updateUIString += tmpString;
 
-                // detect new string by \r\n
-                revStrings = Regex.Split(updateUIString, "\r\n");
-                idxNotEmpty = 0;
-                for(int i = 0; i < revStrings.Length; i++)
+                if(updateUIString.EndsWith("\r\n"))
                 {
-                    if(!String.IsNullOrEmpty(revStrings[i]))
+                    // detect new string by \r\n
+                    revStrings = Regex.Split(updateUIString, "\r\n");
+                    
+                    idxNotEmpty = -1;
+                    for (int i = 0; i < revStrings.Length; i++)
                     {
-                        idxNotEmpty = i;
-                    }
-                }
-
-                lock(mtListBatStat)
-                {
-                    for(int i = 0; i < Battery.NUMS_BATTERY; i++)
-                    {
-                        oldState[i].gParameter = mtListBatStat[i].gParameter;
-                    }
-
-                    Battery.ParseParameter(revStrings[idxNotEmpty], ref mtListBatStat);
-
-                    // compare single param
-                    for(int i = 0; i < mtListBatStat.Count; i++)
-                    {
-                        if(oldState[i].gParameter.stateOfBat != mtListBatStat[i].gParameter.stateOfBat
-                            || (oldState[i].gParameter.resOfBat != mtListBatStat[i].gParameter.resOfBat)
-                            
-                            )
+                        if (!String.IsNullOrEmpty(revStrings[i]))
                         {
-                            string resShow = String.Format("{0}\t Bat {1}\t State {2}\t Vol {3}\t Res {4}\n",
-                                "[" + DateTime.Now + "]", i + "", mtListBatStat[i].gParameter.stateOfBat, 
-                                mtListBatStat[i].gParameter.volOfBat, mtListBatStat[i].gParameter.resOfBat);
-
-                            if (InvokeRequired)
+                            if (revStrings[i].StartsWith("\t"))
                             {
-                                BeginInvoke((MethodInvoker)delegate
-                                {
-                                    textBoxLogStatusBat.AppendText(resShow);
-                                });
+                                idxNotEmpty = i;
                             }
-                            else
+                        }
+                    }
+
+                    if (idxNotEmpty != -1)
+                    {
+                        updateUIString = "";
+
+                        lock (mtListBatStat)
+                        {
+                            for (int i = 0; i < Battery.NUMS_BATTERY; i++)
                             {
-                                textBoxLogStatusBat.AppendText(resShow);
+                                oldState[i].gParameter = mtListBatStat[i].gParameter;
+                            }
+
+                            Battery.ParseParameter(revStrings[idxNotEmpty], ref mtListBatStat);
+
+                            // compare single param
+                            for (int i = 0; i < mtListBatStat.Count; i++)
+                            {
+                                if (oldState[i].gParameter.stateOfBat != mtListBatStat[i].gParameter.stateOfBat
+                                    || (oldState[i].gParameter.resOfBat != mtListBatStat[i].gParameter.resOfBat)
+
+                                    )
+                                {
+                                    string resShow = String.Format("{0}\t Bat {1}\t {2}\n",
+                                        "[" + DateTime.Now + "]", i + "", mtListBatStat[i].gParameter.ToString());
+
+                                    if (InvokeRequired)
+                                    {
+                                        BeginInvoke((MethodInvoker)delegate
+                                        {
+                                            textBoxLogStatusBat.AppendText(resShow);
+                                        });
+                                    }
+                                    else
+                                    {
+                                        textBoxLogStatusBat.AppendText(resShow);
+                                    }
+
+                                    
+                                    // update data result when change
+                                    if (mWriteResuleBat.BaseStream != null)
+                                    {
+                                        mWriteResuleBat.Write(resShow);
+                                        mWriteResuleBat.Flush();
+                                    }
+                                }
                             }
                         }
                     }
                 }
-                
-                
-                // check some parameter has changed
-
-                // update ui
             }
         }
 

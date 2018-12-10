@@ -14,9 +14,7 @@ E:\ToanTV\STM\source\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.cspr
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\STM_TestDevice.exe.config
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\STM_TestDevice.exe
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\STM_TestDevice.pdb
-E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.ResolveComReference.cache
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.BatteryTest.resources
-E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.Form1.resources
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.Properties.Resources.resources
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.SinggleSetupControl.resources
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.GenerateResource.cache

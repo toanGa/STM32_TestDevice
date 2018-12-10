@@ -21,11 +21,19 @@ namespace STM_TestDevice.ExcellUtils
         Workbook xlWorkBook;
         Worksheet xlWorkSheet;
 
+        /// <summary>
+        /// constructor with file name
+        /// </summary>
+        /// <param name="excellFileName"></param>
         public DevicesParser(string excellFileName)
         {
             this.mExcellFileName = excellFileName;
         }
 
+        /// <summary>
+        /// open Excell file for background
+        /// </summary>
+        /// <returns></returns>
         public bool Open()
         {
             if(!IsOpen())
@@ -51,6 +59,10 @@ namespace STM_TestDevice.ExcellUtils
             return true;
         }
 
+        /// <summary>
+        /// close excell application
+        /// </summary>
+        /// <returns></returns>
         public bool Close()
         {
             if (IsOpen())
@@ -76,6 +88,10 @@ namespace STM_TestDevice.ExcellUtils
             return true;
         }
 
+        /// <summary>
+        /// check excell app open or not
+        /// </summary>
+        /// <returns></returns>
         public bool IsOpen()
         {
             return (xlApp != null);
@@ -93,6 +109,9 @@ namespace STM_TestDevice.ExcellUtils
             //}
         }       
 
+        /// <summary>
+        /// open file to view
+        /// </summary>
         public void OpenUI()
         {
             if(!IsOpen())
@@ -109,10 +128,16 @@ namespace STM_TestDevice.ExcellUtils
             }
             else
             {
+                xlWorkBook = xlApp.Workbooks.Open(mExcellFileName);
+                xlWorkSheet = (Worksheet)xlWorkBook.Worksheets.get_Item(1);
                 xlApp.Visible = true;
             }
         }
 
+        /// <summary>
+        /// get list define object from define file
+        /// </summary>
+        /// <returns></returns>
         public List<Device> ParseConfigDefine()
         {
             int rowStartCmd = -1;
