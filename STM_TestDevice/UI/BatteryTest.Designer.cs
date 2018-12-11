@@ -33,8 +33,8 @@ namespace STM_TestDevice.UI
             this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageMain = new System.Windows.Forms.TabPage();
+            this.label13 = new System.Windows.Forms.Label();
             this.textBoxLogStatusBat = new System.Windows.Forms.TextBox();
-            this.textBoxTest = new System.Windows.Forms.TextBox();
             this.button13 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
@@ -77,6 +77,8 @@ namespace STM_TestDevice.UI
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.buttonReportFile = new System.Windows.Forms.Button();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.textBoxHelp = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -93,8 +95,8 @@ namespace STM_TestDevice.UI
             this.serialPortData = new System.IO.Ports.SerialPort(this.components);
             this.richTextBoxDebug = new System.Windows.Forms.RichTextBox();
             this.timerUpdateData = new System.Windows.Forms.Timer(this.components);
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.textBoxHelp = new System.Windows.Forms.TextBox();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.userControl11 = new WpfControlLibraryBat.UserControl1();
             this.tabControl1.SuspendLayout();
             this.tabPageMain.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -123,8 +125,9 @@ namespace STM_TestDevice.UI
             // 
             // tabPageMain
             // 
+            this.tabPageMain.Controls.Add(this.elementHost1);
+            this.tabPageMain.Controls.Add(this.label13);
             this.tabPageMain.Controls.Add(this.textBoxLogStatusBat);
-            this.tabPageMain.Controls.Add(this.textBoxTest);
             this.tabPageMain.Controls.Add(this.button13);
             this.tabPageMain.Controls.Add(this.panel2);
             this.tabPageMain.Controls.Add(this.panel1);
@@ -132,35 +135,35 @@ namespace STM_TestDevice.UI
             this.tabPageMain.Controls.Add(this.buttonLoadConfig);
             this.tabPageMain.Location = new System.Drawing.Point(4, 22);
             this.tabPageMain.Name = "tabPageMain";
-            this.tabPageMain.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageMain.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageMain.Size = new System.Drawing.Size(773, 519);
             this.tabPageMain.TabIndex = 12;
             this.tabPageMain.Text = "Main";
             this.tabPageMain.UseVisualStyleBackColor = true;
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(350, 204);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(116, 13);
+            this.label13.TabIndex = 7;
+            this.label13.Text = "Battery status changed";
+            // 
             // textBoxLogStatusBat
             // 
-            this.textBoxLogStatusBat.Location = new System.Drawing.Point(31, 215);
-            this.textBoxLogStatusBat.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBoxLogStatusBat.Location = new System.Drawing.Point(350, 222);
+            this.textBoxLogStatusBat.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxLogStatusBat.Multiline = true;
             this.textBoxLogStatusBat.Name = "textBoxLogStatusBat";
             this.textBoxLogStatusBat.ReadOnly = true;
             this.textBoxLogStatusBat.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxLogStatusBat.Size = new System.Drawing.Size(560, 71);
+            this.textBoxLogStatusBat.Size = new System.Drawing.Size(374, 277);
             this.textBoxLogStatusBat.TabIndex = 6;
-            // 
-            // textBoxTest
-            // 
-            this.textBoxTest.Location = new System.Drawing.Point(31, 304);
-            this.textBoxTest.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.textBoxTest.Multiline = true;
-            this.textBoxTest.Name = "textBoxTest";
-            this.textBoxTest.Size = new System.Drawing.Size(560, 49);
-            this.textBoxTest.TabIndex = 5;
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(31, 370);
+            this.button13.Location = new System.Drawing.Point(31, 222);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(241, 60);
             this.button13.TabIndex = 4;
@@ -276,7 +279,7 @@ namespace STM_TestDevice.UI
             this.tabPageSetting.Controls.Add(this.label1);
             this.tabPageSetting.Location = new System.Drawing.Point(4, 22);
             this.tabPageSetting.Name = "tabPageSetting";
-            this.tabPageSetting.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPageSetting.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageSetting.Size = new System.Drawing.Size(773, 519);
             this.tabPageSetting.TabIndex = 13;
             this.tabPageSetting.Text = "Setting";
@@ -446,7 +449,7 @@ namespace STM_TestDevice.UI
             this.tabPage1.Controls.Add(this.buttonReportFile);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(773, 519);
             this.tabPage1.TabIndex = 14;
             this.tabPage1.Text = "Tool";
@@ -574,6 +577,27 @@ namespace STM_TestDevice.UI
             this.buttonReportFile.Text = "Generate";
             this.buttonReportFile.UseVisualStyleBackColor = true;
             this.buttonReportFile.Click += new System.EventHandler(this.buttonReportFile_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.textBoxHelp);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(773, 519);
+            this.tabPage2.TabIndex = 15;
+            this.tabPage2.Text = "Help";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // textBoxHelp
+            // 
+            this.textBoxHelp.Location = new System.Drawing.Point(6, 6);
+            this.textBoxHelp.Multiline = true;
+            this.textBoxHelp.Name = "textBoxHelp";
+            this.textBoxHelp.ReadOnly = true;
+            this.textBoxHelp.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBoxHelp.Size = new System.Drawing.Size(761, 507);
+            this.textBoxHelp.TabIndex = 0;
             // 
             // button1
             // 
@@ -718,26 +742,14 @@ namespace STM_TestDevice.UI
             this.timerUpdateData.Interval = 10000;
             this.timerUpdateData.Tick += new System.EventHandler(this.timerUpdateData_Tick);
             // 
-            // tabPage2
+            // elementHost1
             // 
-            this.tabPage2.Controls.Add(this.textBoxHelp);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(773, 519);
-            this.tabPage2.TabIndex = 15;
-            this.tabPage2.Text = "Help";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // textBoxHelp
-            // 
-            this.textBoxHelp.Location = new System.Drawing.Point(6, 6);
-            this.textBoxHelp.Multiline = true;
-            this.textBoxHelp.Name = "textBoxHelp";
-            this.textBoxHelp.ReadOnly = true;
-            this.textBoxHelp.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxHelp.Size = new System.Drawing.Size(761, 507);
-            this.textBoxHelp.TabIndex = 0;
+            this.elementHost1.Location = new System.Drawing.Point(31, 335);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(267, 135);
+            this.elementHost1.TabIndex = 8;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.userControl11;
             // 
             // BatteryTest
             // 
@@ -851,9 +863,11 @@ namespace STM_TestDevice.UI
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button buttonFomatChart;
         private System.Windows.Forms.Button buttonOpenFileFomatChart;
-        private System.Windows.Forms.TextBox textBoxTest;
         private System.Windows.Forms.TextBox textBoxLogStatusBat;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TextBox textBoxHelp;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private WpfControlLibraryBat.UserControl1 userControl11;
     }
 }

@@ -1,0 +1,15 @@
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\bin\Debug\WpfControlLibraryBat.dll
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\bin\Debug\WpfControlLibraryBat.pdb
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\UserControl1.g.cs
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat_MarkupCompile.cache
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat_MarkupCompile.lref
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\UserControl1.baml
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat.g.resources
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat.Properties.Resources.resources
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat.csproj.GenerateResource.cache
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat.csproj.CoreCompileInputs.cache
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat.dll
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat.pdb
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\Window1.g.cs
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\Window1.baml
+E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\WpfControlLibraryBat.csprojAssemblyReference.cache

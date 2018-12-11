@@ -1,6 +1,7 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using STM_TestDevice.ExcellUtils;
 using STM_TestDevice.Exporter;
+using STM_TestDevice.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,26 @@ using System.Windows.Forms;
 
 namespace STM_TestDevice.Devices
 {
-    class Battery
+    public enum BatteryStatus
     {
-        // numsParam = 
+        BAT_NO_DETECTED = 0,
+        BAT_OK,
+        BAT_CHARGE_FAULT,
+        BAT_PRE_CHARGE,
+
+        BAT_NO_CHARGER_NO_DISCHARGER,
+        BAT_CHARGE_DISCHARGE,
+
+        BAT_END_MEASURE_RESISTANCE,
+        BAT_CHARGE,
+        BAT_FULL,
+        BAT_FULL_MEASURE_RESISTANCE,
+        BAT_DISCHARGE,
+        BAT_END,
+    };
+
+    public class Battery
+    {
         public struct Parameter
         {
             public double temperate;
@@ -29,7 +47,14 @@ namespace STM_TestDevice.Devices
 
             public override string ToString()
             {
-                return String.Format("State:{0}\tVol:{1}\tAvgCurr:{2}\tRes:{3}\tNumberRun:{4}", stateOfBat, volOfBat, avgCurrent, resOfBat, numberOfRun);
+                return String.Format("State:{0}\tVol:{1}\tAvgCurr:{2}\tRes:{3}\tNumberRun:{4}", BatteryDetail.GetBatStatName((BatteryStatus)stateOfBat), volOfBat, avgCurrent, resOfBat, numberOfRun);
+            }
+
+            public string ToStringMultiLine()
+            {
+                string newLineString = "State: " + BatteryDetail.GetBatStatName((BatteryStatus)stateOfBat) + "\r\nVol: " + volOfBat + "\r\nAvgCurr: " + avgCurrent + "\r\nNumberRun" + numberOfRun;
+                //return String.Format("State:{0}{4}Vol:{1}{4}AvgCurr:{2}{4}Res:{3}{4}NumberRun:{4}", BatteryDetail.GetBatStatName((BatteryStatus)stateOfBat), volOfBat, avgCurrent, resOfBat, numberOfRun, "\n");
+                return newLineString;
             }
         }
 
@@ -269,7 +294,11 @@ namespace STM_TestDevice.Devices
                 //    int numberOfRun;
                 //    double resOfBat;
                 //}
-
+                if(idxBat >= listBattery.Count)
+                {
+                    MessageBox.Show("Invalid string income");
+                    return false;
+                }
                 listBattery[idxBat].gParameter.idxBat = idxBat;
                 switch (idxParam)
                 {

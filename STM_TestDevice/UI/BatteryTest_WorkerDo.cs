@@ -269,6 +269,7 @@ namespace STM_TestDevice.UI
                                     string resShow = String.Format("{0}\t Bat {1}\t {2}\n",
                                         "[" + DateTime.Now + "]", i + "", mtListBatStat[i].gParameter.ToString());
 
+                                    // update for main UI
                                     if (InvokeRequired)
                                     {
                                         BeginInvoke((MethodInvoker)delegate
@@ -280,8 +281,29 @@ namespace STM_TestDevice.UI
                                     {
                                         textBoxLogStatusBat.AppendText(resShow);
                                     }
+                                    // update for view detail
+                                    if(InvokeRequired)
+                                    {
+                                        BeginInvoke((MethodInvoker)delegate
+                                       {
+                                           if(!BatteryDetail.gBatDetailUI.Visible)
+                                           {
+                                               BatteryDetail.gBatDetailUI = new BatteryDetail();
+                                           }
+                                           BatteryDetail.gBatDetailUI.UpdateBatStat(mtListBatStat);
+                                           BatteryDetail.gBatDetailUI.Visible = true;
+                                       });
+                                    }
+                                    else
+                                    {
+                                        if (!BatteryDetail.gBatDetailUI.Visible)
+                                        {
+                                            BatteryDetail.gBatDetailUI = new BatteryDetail();
+                                        }
+                                        BatteryDetail.gBatDetailUI.UpdateBatStat(mtListBatStat);
+                                        BatteryDetail.gBatDetailUI.Visible = true;
+                                    }
 
-                                    
                                     // update data result when change
                                     if (mWriteResuleBat.BaseStream != null)
                                     {

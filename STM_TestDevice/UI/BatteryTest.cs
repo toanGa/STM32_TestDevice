@@ -267,6 +267,11 @@ namespace STM_TestDevice.UI
             }
         }
 
+        public void FocusOnBatStat()
+        {
+            textBoxLogStatusBat.Focus();
+        }
+
         // sub funtion
         Control GetControlByName(string Name)
         {
@@ -298,7 +303,6 @@ namespace STM_TestDevice.UI
         {
             return FileUtils.GetFullPath(textBoxReportFile.Text);
         }
-
         // Event function
 
         /// <summary>
@@ -520,17 +524,7 @@ namespace STM_TestDevice.UI
         /// <param name="e"></param>
         private void buttonTest_Click(object sender, EventArgs e)
         {
-            string testSub = textBoxTest.Text;
-            string[] sub = Regex.Split(testSub, "\t");
-
-            List<Battery> lBat = new List<Battery>();
-            for(int i = 0; i < 12; i++)
-            {
-                lBat.Add(new Battery());
-            }
-
-            Battery.ParseParameter(textBoxTest.Text, ref lBat);
-            
+            Console.WriteLine("Test perpose");
             mPasteExcelEvent.Reset();
             mPasteExcelEvent.Set();
         }
@@ -762,7 +756,5 @@ namespace STM_TestDevice.UI
                 textBoxFomatChart.Text = openFileDialog1.FileName;
             }
         }
-
-
     }
 }

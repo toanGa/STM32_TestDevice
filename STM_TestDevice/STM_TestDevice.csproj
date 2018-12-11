@@ -58,8 +58,11 @@
     <Reference Include="Office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -68,6 +71,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comm\SerialComm.cs" />
@@ -79,6 +85,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ExcellUtils\FileUtils.cs" />
+    <Compile Include="UI\BatteryDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\BatteryDetail.Designer.cs">
+      <DependentUpon>BatteryDetail.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\BatteryTest.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +111,12 @@
     <Compile Include="Protocol\L2Process.cs" />
     <Compile Include="Protocol\RS232Connection.cs" />
     <Compile Include="Protocol\TCPIPConnection.cs" />
+    <Compile Include="UI\SinggleBatInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SinggleBatInfo.Designer.cs">
+      <DependentUpon>SinggleBatInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SinggleSetupControl.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +125,9 @@
     </Compile>
     <Compile Include="Utils\ThreadManager.cs" />
     <Compile Include="Utils\Util.cs" />
+    <EmbeddedResource Include="UI\BatteryDetail.resx">
+      <DependentUpon>BatteryDetail.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\BatteryTest.resx">
       <DependentUpon>BatteryTest.cs</DependentUpon>
     </EmbeddedResource>
@@ -120,6 +141,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="UI\SinggleBatInfo.resx">
+      <DependentUpon>SinggleBatInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SinggleSetupControl.resx">
       <DependentUpon>SinggleSetupControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -152,6 +176,18 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resource\BatteryFull.png" />
+    <Content Include="Resource\Charging.png" />
+    <Content Include="Resource\Empty.png" />
+    <Content Include="Resource\NoBat.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WpfControlLibraryBat\WpfControlLibraryBat.csproj">
+      <Project>{42198F67-A8E6-4CFF-ABB1-C509A8EDF562}</Project>
+      <Name>WpfControlLibraryBat</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
