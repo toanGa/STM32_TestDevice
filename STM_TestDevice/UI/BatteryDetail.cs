@@ -19,7 +19,7 @@ namespace STM_TestDevice.UI
         public static string noBatImageName = "NoBat.png";
 
         public static BatteryDetail gBatDetailUI = new BatteryDetail();
-        List<Battery> mListBats;
+        List<Battery> mtListBats;
         public BatteryDetail()
         {
             InitializeComponent();
@@ -32,6 +32,7 @@ namespace STM_TestDevice.UI
                 {
                     Label lbl = c as Label;
                     lbl.Text = "";
+                    lbl.Visible = false;
                 }
 
                 Control ptbox = GetControlByName("pictureBox" + i);
@@ -45,7 +46,7 @@ namespace STM_TestDevice.UI
         public void UpdateBatStat(List<Battery> listBats)
         {
             int idxBat;
-            mListBats = listBats;
+            mtListBats = listBats;
             for (int i = 0; i < listBats.Count; i++)
             {
                 idxBat = i;
@@ -67,10 +68,12 @@ namespace STM_TestDevice.UI
                     if (fileImage.EndsWith(emtybatImageName))
                     {
                         lbl.Text = batStatName;
+                        lbl.Visible = true;
                     }
                     else
                     {
                         lbl.Text = "";
+                        lbl.Visible = false;
                     }
                 }
             }
@@ -159,7 +162,11 @@ namespace STM_TestDevice.UI
         {
             //SinggleBatInfo.BatInfo.Location = Cursor.Position;
             if(SinggleBatInfo.BatInfo.Visible)
+            {
                 SinggleBatInfo.BatInfo.Visible = false;
+                Console.WriteLine("Bat info disable");
+            }
+               
         }
 
         private void pictureBox_MouseEnter(object sender, EventArgs e)
@@ -170,7 +177,11 @@ namespace STM_TestDevice.UI
                 SinggleBatInfo.BatInfo.Location = Cursor.Position;
                 SinggleBatInfo.BatInfo.Visible = true;
 
-                SinggleBatInfo.BatInfo.ShowInfo(mListBats[(int)pt.Tag - 1]);
+                lock(mtListBats)
+                {
+                    SinggleBatInfo.BatInfo.ShowInfo(mtListBats[(int)pt.Tag - 1]);
+                }
+                
                 SinggleBatInfo.BatInfo.Text = "Bat " + (int)pt.Tag;
             }
         }

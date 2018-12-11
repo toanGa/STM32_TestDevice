@@ -756,5 +756,16 @@ namespace STM_TestDevice.UI
                 textBoxFomatChart.Text = openFileDialog1.FileName;
             }
         }
+
+        private void buttonViewBatStat_Click(object sender, EventArgs e)
+        {
+            if (!BatteryDetail.gBatDetailUI.Visible)
+            {
+                BatteryDetail.gBatDetailUI = new BatteryDetail();
+            }
+            BatteryDetail.gBatDetailUI.UpdateBatStat(mtListBatStat);
+            BatteryDetail.gBatDetailUI.Visible = true;
+            BatteryDetail.gBatDetailUI.Focus();
+        }
     }
 }
