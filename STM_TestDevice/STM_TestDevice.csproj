@@ -85,6 +85,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ExcellUtils\FileUtils.cs" />
+    <Compile Include="GPIB\GPIBHelper.cs" />
     <Compile Include="UI\BatteryDetail.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +112,12 @@
     <Compile Include="Protocol\L2Process.cs" />
     <Compile Include="Protocol\RS232Connection.cs" />
     <Compile Include="Protocol\TCPIPConnection.cs" />
+    <Compile Include="UI\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SinggleBatInfo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +148,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="UI\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SinggleBatInfo.resx">
       <DependentUpon>SinggleBatInfo.cs</DependentUpon>
     </EmbeddedResource>
@@ -188,6 +198,17 @@
       <Project>{42198F67-A8E6-4CFF-ABB1-C509A8EDF562}</Project>
       <Name>WpfControlLibraryBat</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="VisaComLib">
+      <Guid>{DB8CBF00-D6D3-11D4-AA51-00A024EE30BD}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

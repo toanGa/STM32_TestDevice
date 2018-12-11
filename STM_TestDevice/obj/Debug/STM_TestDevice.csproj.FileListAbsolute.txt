@@ -43,3 +43,5 @@ E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\TestDebug\WpfC
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\TestDebug\WpfControlLibraryBat.pdb
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.BatteryDetail.resources
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.SinggleBatInfo.resources
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.ResolveComReference.cache
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.Form1.resources
