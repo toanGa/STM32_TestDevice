@@ -1,4 +1,5 @@
-﻿using STM_TestDevice.Devices;
+﻿using STM_TestDevice.Comm;
+using STM_TestDevice.Devices;
 using STM_TestDevice.ExcellUtils;
 using STM_TestDevice.Exporter;
 using System;
@@ -69,17 +70,51 @@ namespace STM_TestDevice.UI
             comboBoxControl.Items.Clear();
             comboBoxControl.DataSource = SerialPort.GetPortNames();
 
+            // Auto detect serial port for Control com
             if (comboBoxControl.Items.Count > 0)
             {
-                comboBoxControl.SelectedIndex = 0;
+                SerialComm serialComm = new SerialComm();
+                SerialPort detSerial = serialComm.DetectSerial("P[", 115200, 1000);
+                if (detSerial != null)
+                {
+                    for (int i = 0; i < comboBoxControl.Items.Count; i++)
+                    {
+                        if (comboBoxControl.Items[i].ToString() == detSerial.PortName)
+                        {
+                            comboBoxControl.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    comboBoxControl.SelectedIndex = 0;
+                }
             }
+
 
             comboBoxData.Items.Clear();
             comboBoxData.DataSource = SerialPort.GetPortNames();
-
+            // Auto detect serial port for Data com
             if (comboBoxData.Items.Count > 0)
             {
-                comboBoxData.SelectedIndex = 0;
+                SerialComm serialComm = new SerialComm();
+                SerialPort detSerial = serialComm.DetectSerial("\t", 115200, 1000);
+                if(detSerial != null)
+                {
+                    for(int i = 0; i < comboBoxData.Items.Count; i++)
+                    {
+                        if(comboBoxData.Items[i].ToString() == detSerial.PortName)
+                        {
+                            comboBoxData.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    comboBoxData.SelectedIndex = 0;
+                }
             }
             // end of combobox setup
 
@@ -527,6 +562,9 @@ namespace STM_TestDevice.UI
             Console.WriteLine("Test perpose");
             mPasteExcelEvent.Reset();
             mPasteExcelEvent.Set();
+
+            SerialComm serialComm = new SerialComm();
+            SerialPort detectPort = serialComm.DetectSerial("Toan", 115200);
         }
 
         /// <summary>

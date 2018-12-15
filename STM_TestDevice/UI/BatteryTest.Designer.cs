@@ -33,8 +33,7 @@ namespace STM_TestDevice.UI
             this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageMain = new System.Windows.Forms.TabPage();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.userControl11 = new WpfControlLibraryBat.UserControl1();
+            this.buttonViewBatStat = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
             this.textBoxLogStatusBat = new System.Windows.Forms.TextBox();
             this.button13 = new System.Windows.Forms.Button();
@@ -97,7 +96,6 @@ namespace STM_TestDevice.UI
             this.serialPortData = new System.IO.Ports.SerialPort(this.components);
             this.richTextBoxDebug = new System.Windows.Forms.RichTextBox();
             this.timerUpdateData = new System.Windows.Forms.Timer(this.components);
-            this.buttonViewBatStat = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPageMain.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -127,7 +125,6 @@ namespace STM_TestDevice.UI
             // tabPageMain
             // 
             this.tabPageMain.Controls.Add(this.buttonViewBatStat);
-            this.tabPageMain.Controls.Add(this.elementHost1);
             this.tabPageMain.Controls.Add(this.label13);
             this.tabPageMain.Controls.Add(this.textBoxLogStatusBat);
             this.tabPageMain.Controls.Add(this.button13);
@@ -143,14 +140,15 @@ namespace STM_TestDevice.UI
             this.tabPageMain.Text = "Main";
             this.tabPageMain.UseVisualStyleBackColor = true;
             // 
-            // elementHost1
+            // buttonViewBatStat
             // 
-            this.elementHost1.Location = new System.Drawing.Point(31, 335);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(267, 135);
-            this.elementHost1.TabIndex = 8;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.userControl11;
+            this.buttonViewBatStat.Location = new System.Drawing.Point(484, 194);
+            this.buttonViewBatStat.Name = "buttonViewBatStat";
+            this.buttonViewBatStat.Size = new System.Drawing.Size(75, 23);
+            this.buttonViewBatStat.TabIndex = 9;
+            this.buttonViewBatStat.Text = "View";
+            this.buttonViewBatStat.UseVisualStyleBackColor = true;
+            this.buttonViewBatStat.Click += new System.EventHandler(this.buttonViewBatStat_Click);
             // 
             // label13
             // 
@@ -753,21 +751,11 @@ namespace STM_TestDevice.UI
             this.timerUpdateData.Interval = 10000;
             this.timerUpdateData.Tick += new System.EventHandler(this.timerUpdateData_Tick);
             // 
-            // buttonViewBatStat
-            // 
-            this.buttonViewBatStat.Location = new System.Drawing.Point(484, 194);
-            this.buttonViewBatStat.Name = "buttonViewBatStat";
-            this.buttonViewBatStat.Size = new System.Drawing.Size(75, 23);
-            this.buttonViewBatStat.TabIndex = 9;
-            this.buttonViewBatStat.Text = "View";
-            this.buttonViewBatStat.UseVisualStyleBackColor = true;
-            this.buttonViewBatStat.Click += new System.EventHandler(this.buttonViewBatStat_Click);
-            // 
             // BatteryTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1202, 660);
+            this.ClientSize = new System.Drawing.Size(1202, 611);
             this.Controls.Add(this.richTextBoxDebug);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button11);
@@ -879,8 +867,6 @@ namespace STM_TestDevice.UI
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TextBox textBoxHelp;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private WpfControlLibraryBat.UserControl1 userControl11;
         private System.Windows.Forms.Button buttonViewBatStat;
     }
 }
