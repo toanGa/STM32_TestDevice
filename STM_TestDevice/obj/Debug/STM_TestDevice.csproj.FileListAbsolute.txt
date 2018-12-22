@@ -45,3 +45,4 @@ E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.SinggleBatInfo.resources
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.csproj.ResolveComReference.cache
 E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.Form1.resources
+E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\obj\Debug\STM_TestDevice.UI.BatteryDetailControl.resources

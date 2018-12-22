@@ -286,22 +286,14 @@ namespace STM_TestDevice.UI
                                     {
                                         BeginInvoke((MethodInvoker)delegate
                                        {
-                                           if(!BatteryDetail.gBatDetailUI.Visible)
-                                           {
-                                               BatteryDetail.gBatDetailUI = new BatteryDetail();
-                                           }
-                                           BatteryDetail.gBatDetailUI.UpdateBatStat(mtListBatStat);
-                                           BatteryDetail.gBatDetailUI.Visible = true;
+                                           batteryDetailControl.UpdateBatStat(mtListBatStat);
+                                           batteryDetailControl.Visible = true;
                                        });
                                     }
                                     else
                                     {
-                                        if (!BatteryDetail.gBatDetailUI.Visible)
-                                        {
-                                            BatteryDetail.gBatDetailUI = new BatteryDetail();
-                                        }
-                                        BatteryDetail.gBatDetailUI.UpdateBatStat(mtListBatStat);
-                                        BatteryDetail.gBatDetailUI.Visible = true;
+                                        batteryDetailControl.UpdateBatStat(mtListBatStat);
+                                        batteryDetailControl.Visible = true;
                                     }
 
                                     // update data result when change

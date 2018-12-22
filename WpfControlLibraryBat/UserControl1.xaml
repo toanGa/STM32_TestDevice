@@ -20,7 +20,7 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
-        <Image Name="bat1" Grid.Column="0" Grid.Row="0" Source="STM_TestDevice/Resource/Charging.png"/>
+        <Image Name="bat1" Grid.Column="0" Grid.Row="0" Source="E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\Resource\BatteryFull.png"/>
         <Image Name="bat2" Grid.Column="1" Grid.Row="0"/>
         <Image Name="bat3" Grid.Column="2" Grid.Row="0"/>
         <Image Name="bat4" Grid.Column="3" Grid.Row="0"/>

@@ -19,9 +19,11 @@ namespace WpfControlLibraryBat
     /// </summary>
     public partial class Window1 : Window
     {
+        public static Window1 myForm = new Window1();
         public Window1()
         {
             InitializeComponent();
+            this.Title = "Test wpf";
         }
     }
 }

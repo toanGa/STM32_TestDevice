@@ -6,7 +6,31 @@
         xmlns:local="clr-namespace:WpfControlLibraryBat"
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800">
-    <Grid>
-        
+    <Grid x:Name="GridDetailBat">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <Image Name="bat1" Grid.Column="0" Grid.Row="0" Source="E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\Resource\BatteryFull.png"/>
+        <Image Name="bat2" Grid.Column="1" Grid.Row="0"/>
+        <Image Name="bat3" Grid.Column="2" Grid.Row="0"/>
+        <Image Name="bat4" Grid.Column="3" Grid.Row="0"/>
+        <Image Name="bat5" Grid.Column="0" Grid.Row="1"/>
+        <Image Name="bat6" Grid.Column="1" Grid.Row="1"/>
+        <Image Name="bat7" Grid.Column="2" Grid.Row="1"/>
+        <Image Name="bat8" Grid.Column="3" Grid.Row="1"/>
+        <Image Name="bat9" Grid.Column="0" Grid.Row="2"/>
+        <Image Name="bat10" Grid.Column="1" Grid.Row="2"/>
+        <Image Name="bat11" Grid.Column="2" Grid.Row="2"/>
+        <Image Name="bat12" Grid.Column="3" Grid.Row="2"/>
     </Grid>
 </Window>

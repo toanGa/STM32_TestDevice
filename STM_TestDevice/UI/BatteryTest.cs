@@ -15,6 +15,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
+using WpfControlLibraryBat;
 
 namespace STM_TestDevice.UI
 {
@@ -24,7 +26,7 @@ namespace STM_TestDevice.UI
         const string FILE_BUFFER = "LOG_BUFFER";
         const string FODER_RESULT = "ResultTest";
         const string HELP_FILE = "help_user";
-
+        const string PRE_BUTTON_CFG_NAME = "buttonConfig";
         string mtLogString = "";
         string mtUpdateBatStatUI = "";
 
@@ -65,7 +67,7 @@ namespace STM_TestDevice.UI
         public BatteryTest()
         {
             InitializeComponent();
-
+            
             // conbobox
             comboBoxControl.Items.Clear();
             comboBoxControl.DataSource = SerialPort.GetPortNames();
@@ -74,7 +76,7 @@ namespace STM_TestDevice.UI
             if (comboBoxControl.Items.Count > 0)
             {
                 SerialComm serialComm = new SerialComm();
-                SerialPort detSerial = serialComm.DetectSerial("P[", 115200, 1000);
+                SerialPort detSerial = serialComm.DetectSerial("P[", 115200, 3000);
                 if (detSerial != null)
                 {
                     for (int i = 0; i < comboBoxControl.Items.Count; i++)
@@ -99,7 +101,7 @@ namespace STM_TestDevice.UI
             if (comboBoxData.Items.Count > 0)
             {
                 SerialComm serialComm = new SerialComm();
-                SerialPort detSerial = serialComm.DetectSerial("\t", 115200, 1000);
+                SerialPort detSerial = serialComm.DetectSerial("\t", 115200, 3000);
                 if(detSerial != null)
                 {
                     for(int i = 0; i < comboBoxData.Items.Count; i++)
@@ -121,11 +123,12 @@ namespace STM_TestDevice.UI
             // clear button text
             for (int i = 1; i < 13; i++)
             {
-                Control currButton = GetControlByName("button" + i);
+                Control currButton = GetControlByName("buttonConfig" + i);
                 if (currButton != null)
                 {
                     Button b = (Button)currButton;
                     b.Text = "";
+                    b.Visible = false;
                 }
             }
 
@@ -140,6 +143,9 @@ namespace STM_TestDevice.UI
             {
                 textBoxHelp.Text = File.ReadAllText(FileUtils.GetFullPath(HELP_FILE));
             }
+
+            // update battery control
+            batteryDetailControl.UpdateBatStat(mtListBatStat);
 
             //oldTextContent = File.ReadAllText(FILE_BUFFER);
             //ExcelExporter exp = new ExcelExporter(getPathReportFile());
@@ -307,10 +313,33 @@ namespace STM_TestDevice.UI
             textBoxLogStatusBat.Focus();
         }
 
+        public string GetTextLogStatusBat()
+        {
+            return textBoxLogStatusBat.Text;
+        }
+
+
+        public IEnumerable<Control> GetAllControl(Control control)
+        {
+            var controls = control.Controls.Cast<Control>();
+
+            return controls.SelectMany(ctrl => GetAllControl(ctrl))
+                                      .Concat(controls); ;
+        }
+
+        public IEnumerable<Control> GetAllControl(Control control, Type type)
+        {
+            var controls = control.Controls.Cast<Control>();
+
+            return controls.SelectMany(ctrl => GetAllControl(ctrl, type))
+                                      .Concat(controls); ;
+        }
+
         // sub funtion
         Control GetControlByName(string Name)
         {
-            foreach (Control c in this.Controls)
+            var controls = GetAllControl(this);
+            foreach (Control c in controls)
                 if (c.Name == Name)
                     return c;
 
@@ -319,11 +348,14 @@ namespace STM_TestDevice.UI
 
         Device getDeviceByName(string name)
         {
-            foreach (Device d in mDevices)
+            if(mDevices != null)
             {
-                if (d.gCmdName == name)
+                foreach (Device d in mDevices)
                 {
-                    return d;
+                    if (d.gCmdName == name)
+                    {
+                        return d;
+                    }
                 }
             }
             return null;
@@ -352,11 +384,14 @@ namespace STM_TestDevice.UI
             if (!String.IsNullOrEmpty(b.Text))
             {
                 Device rootDevice = getDeviceByName(b.Text);
-                List<Device> listSetupDetail = mDevicesParser.ParseSetupData(rootDevice);
-                if (listSetupDetail != null)
+                if(rootDevice != null)
                 {
-                    SinggleSetupControl singgleSetup = new SinggleSetupControl(rootDevice, listSetupDetail);
-                    singgleSetup.Show();
+                    List<Device> listSetupDetail = mDevicesParser.ParseSetupData(rootDevice);
+                    if (listSetupDetail != null)
+                    {
+                        SinggleSetupControl singgleSetup = new SinggleSetupControl(rootDevice, listSetupDetail);
+                        singgleSetup.Show();
+                    }
                 }
             }
         }
@@ -506,12 +541,17 @@ namespace STM_TestDevice.UI
 
             for (int i = 0; i < mDevices.Count; i++)
             {
-                Control currButton = GetControlByName("button" + (i + 1));
+                Control currButton = GetControlByName("buttonConfig" + (i + 1));
+                Button b = (Button)currButton;
                 if (currButton != null)
                 {
-                    Button b = (Button)currButton;
                     //b.Click += button_Click;
                     b.Text = mDevices[i].gCmdName;
+                    b.Visible = true;
+                }
+                else
+                {
+                    b.Visible = false;
                 }
             }
 
@@ -559,12 +599,17 @@ namespace STM_TestDevice.UI
         /// <param name="e"></param>
         private void buttonTest_Click(object sender, EventArgs e)
         {
+            Window1 wpfWin = new WpfControlLibraryBat.Window1();
+            ElementHost.EnableModelessKeyboardInterop(wpfWin);
+            Window1.myForm.Show();
+
+            // end test
             Console.WriteLine("Test perpose");
             mPasteExcelEvent.Reset();
             mPasteExcelEvent.Set();
 
-            SerialComm serialComm = new SerialComm();
-            SerialPort detectPort = serialComm.DetectSerial("Toan", 115200);
+            //SerialComm serialComm = new SerialComm();
+            //SerialPort detectPort = serialComm.DetectSerial("Toan", 115200);
         }
 
         /// <summary>
@@ -633,6 +678,58 @@ namespace STM_TestDevice.UI
         {
             mPasteExcelEvent.Reset();
             mPasteExcelEvent.Set();
+        }
+
+        /// <summary>
+        /// system checking tick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        int tickCnt = 0;
+        private void timerSystemChecking_Tick(object sender, EventArgs e)
+        {
+            labelSysInfo.ForeColor = Color.Red;
+
+            string textInfo = "";
+            if(mDevicesParser == null)
+            {
+                textInfo = "Config file NOT loaded";
+            }
+            else if(!serialPortControl.IsOpen)
+            {
+                textInfo = "Control Port is closed";
+            }
+            else if (!serialPortData.IsOpen)
+            {
+                textInfo = "Data Port is closed";
+            }
+            else
+            {
+                textInfo = "System is running";
+                labelSysInfo.ForeColor = Color.Green;
+            }
+
+            tickCnt++;
+            if(tickCnt > 3)
+            {
+                tickCnt = 1;
+            }
+            switch (tickCnt)
+            {
+                case 1:
+                    textInfo += "...";
+                    break;
+                case 2:
+                    textInfo += "......";
+                    break;
+                case 3:
+                    textInfo += ".........";
+                    break;
+                default:
+                    break;
+            }
+
+            labelSysInfo.Text = textInfo;
         }
 
         private void comboBoxData_DropDown(object sender, EventArgs e)
@@ -797,13 +894,34 @@ namespace STM_TestDevice.UI
 
         private void buttonViewBatStat_Click(object sender, EventArgs e)
         {
-            if (!BatteryDetail.gBatDetailUI.Visible)
-            {
-                BatteryDetail.gBatDetailUI = new BatteryDetail();
-            }
-            BatteryDetail.gBatDetailUI.UpdateBatStat(mtListBatStat);
-            BatteryDetail.gBatDetailUI.Visible = true;
-            BatteryDetail.gBatDetailUI.Focus();
+            //if (!BatteryDetail.gBatDetailUI.Visible)
+            //{
+            //    BatteryDetail.gBatDetailUI = new BatteryDetail();
+            //}
+            batteryDetailControl.UpdateBatStat(mtListBatStat);
+            batteryDetailControl.Visible = true;
+            batteryDetailControl.Focus();
         }
+
+        private void buttonDeviceConfig_Click(object sender, EventArgs e)
+        {
+            SidePanel.Height = buttonDeviceConfig.Height;
+            SidePanel.Top = buttonDeviceConfig.Top;
+            panelFileConfig.Hide();
+            panelDeviceConfig.Show();
+            //panelDeviceConfig.BringToFront();
+        }
+
+        private void buttonFileConfig_Click(object sender, EventArgs e)
+        {
+            SidePanel.Height = buttonFileConfig.Height;
+            SidePanel.Top = buttonFileConfig.Top;
+
+            panelDeviceConfig.Hide();
+            panelFileConfig.Show();
+            //panelFileConfig.BringToFront();
+        }
+
+
     }
 }

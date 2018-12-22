@@ -18,6 +18,10 @@ namespace STM_TestDevice.UI
         public static string fullBatImageName = "BatteryFull.png";
         public static string noBatImageName = "NoBat.png";
 
+
+        const string PRE_LABEL_NAME = "labelDetail";
+        const string PRE_PICBOX_NAME = "pictureBoxDetail";
+
         public static BatteryDetail gBatDetailUI = new BatteryDetail();
         List<Battery> mtListBats;
         public BatteryDetail()
@@ -27,7 +31,7 @@ namespace STM_TestDevice.UI
             // clear lable text
             for (int i = 1; i <= Battery.NUMS_BATTERY; i++)
             {
-                Control c = GetControlByName("label" + i);
+                Control c = GetControlByName(PRE_LABEL_NAME + i);
                 if(c != null)
                 {
                     Label lbl = c as Label;
@@ -35,7 +39,7 @@ namespace STM_TestDevice.UI
                     lbl.Visible = false;
                 }
 
-                Control ptbox = GetControlByName("pictureBox" + i);
+                Control ptbox = GetControlByName(PRE_PICBOX_NAME + i);
                 if(ptbox != null)
                 {
                     ptbox.Tag = i;
@@ -160,35 +164,63 @@ namespace STM_TestDevice.UI
 
         private void pictureBox_MouseLeave(object sender, EventArgs e)
         {
-            //SinggleBatInfo.BatInfo.Location = Cursor.Position;
-            if(SinggleBatInfo.BatInfo.Visible)
-            {
-                SinggleBatInfo.BatInfo.Visible = false;
-                Console.WriteLine("Bat info disable");
-            }
+            //if(SinggleBatInfo.BatInfo.Visible)
+            //{
+            //    SinggleBatInfo.BatInfo.Visible = false;
+            //    Console.WriteLine("Bat info disable");
+            //}
                
         }
 
         private void pictureBox_MouseEnter(object sender, EventArgs e)
         {
-            if (!SinggleBatInfo.BatInfo.Visible)
-            {
-                PictureBox pt = sender as PictureBox;
-                SinggleBatInfo.BatInfo.Location = Cursor.Position;
-                SinggleBatInfo.BatInfo.Visible = true;
+            //if (!SinggleBatInfo.BatInfo.Visible)
+            //{
+            //    PictureBox pt = sender as PictureBox;
+            //    SinggleBatInfo.BatInfo.Location = Cursor.Position;
+            //    SinggleBatInfo.BatInfo.Visible = true;
 
-                lock(mtListBats)
-                {
-                    SinggleBatInfo.BatInfo.ShowInfo(mtListBats[(int)pt.Tag - 1]);
-                }
-                
-                SinggleBatInfo.BatInfo.Text = "Bat " + (int)pt.Tag;
-            }
+            //    lock(mtListBats)
+            //    {
+            //        SinggleBatInfo.BatInfo.ShowInfo(mtListBats[(int)pt.Tag - 1]);
+            //    }
+
+            //    SinggleBatInfo.BatInfo.ShowBatName("Bat " + (int)pt.Tag);
+            //}
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             Program.batteryTest.FocusOnBatStat();
+        }
+
+        private void pictureBox_MouseClick(object sender, EventArgs e)
+        {
+            PictureBox pt = sender as PictureBox;
+            if (!SinggleBatInfo.BatInfo.Visible)
+            {
+                SinggleBatInfo.BatInfo = new SinggleBatInfo(null);
+                SinggleBatInfo.BatInfo.Location = Cursor.Position;
+                SinggleBatInfo.BatInfo.Visible = true;
+                SinggleBatInfo.BatInfo.TopMost = true;
+                lock (mtListBats)
+                {
+                    SinggleBatInfo.BatInfo.ShowInfo(mtListBats[(int)pt.Tag - 1]);
+                }
+
+                SinggleBatInfo.BatInfo.ShowBatName("Bat " + ((int)pt.Tag - 1));
+            }
+            else
+            {
+                SinggleBatInfo.BatInfo.Location = Cursor.Position;
+                SinggleBatInfo.BatInfo.TopMost = true;
+                lock (mtListBats)
+                {
+                    SinggleBatInfo.BatInfo.ShowInfo(mtListBats[(int)pt.Tag - 1]);
+                }
+
+                SinggleBatInfo.BatInfo.ShowBatName("Bat " + (int)pt.Tag);
+            }
         }
     }
 }

@@ -92,6 +92,12 @@
     <Compile Include="UI\BatteryDetail.Designer.cs">
       <DependentUpon>BatteryDetail.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\BatteryDetailControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\BatteryDetailControl.Designer.cs">
+      <DependentUpon>BatteryDetailControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\BatteryTest.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,6 +140,9 @@
     <Compile Include="Utils\Util.cs" />
     <EmbeddedResource Include="UI\BatteryDetail.resx">
       <DependentUpon>BatteryDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\BatteryDetailControl.resx">
+      <DependentUpon>BatteryDetailControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\BatteryTest.resx">
       <DependentUpon>BatteryTest.cs</DependentUpon>
