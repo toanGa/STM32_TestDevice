@@ -22,7 +22,6 @@ namespace STM_TestDevice.UI
 {
     public partial class BatteryTest : Form
     {
-        const string fileName = @"E:\ToanTV\STM\2.source c#\STM_TestDevice\STM_TestDevice\bin\Debug\ConfigBatery.xlsx";
         const string FILE_BUFFER = "LOG_BUFFER";
         const string FODER_RESULT = "ResultTest";
         const string HELP_FILE = "help_user";

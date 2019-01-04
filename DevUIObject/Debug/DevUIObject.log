@@ -1,0 +1,3 @@
+﻿  DevUIObject.cpp
+e:\toantv\stm\2.source c#\stm_testdevice\devuiobject\devuiobject.cpp(33): warning C4101: 'lblPtr': unreferenced local variable
+  DevUIObject.vcxproj -> E:\ToanTV\STM\2.source c#\STM_TestDevice\Debug\DevUIObject.exe
