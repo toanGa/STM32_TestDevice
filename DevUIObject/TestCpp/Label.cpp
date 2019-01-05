@@ -6,6 +6,7 @@ Label::Label()
 {
 	Name = (char*)"Lable";
 	ControlType = ControlLabel;
+
 }
 
 

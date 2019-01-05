@@ -4,7 +4,14 @@
 
 Control::Control()
 {
+    Name = (char*)"Control";
+    ControlType = ControlBase;
+    Text = NULL;
 
+    TextChanged = NULL;
+    KeyDown = NULL;
+    KeyPress = NULL;
+    KeyUp = NULL;
 }
 
 
@@ -114,6 +121,10 @@ void Control::Show()
 }
 
 void Control::Draw()
+{
+}
+
+void Control::Dispose()
 {
 }
 

@@ -31,3 +31,41 @@ void Button::go()
 {
 	printf("Button Go");
 }
+
+class A
+{
+public:
+	A()
+	{
+		printf("A constuctor\r\n");
+	}
+	A(int, int)
+	{
+		printf("A int constuctor\r\n");
+	}
+};
+
+class B: public A
+{
+public:
+	B(int x) :A(0, x)
+	{
+		int bb = 1;
+	}
+
+	B() : A()
+	{
+		int bb = 1;
+	}
+};
+
+class C : public A
+{
+
+};
+
+void TestABC()
+{
+	B b();
+	C c();
+}

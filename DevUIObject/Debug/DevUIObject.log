@@ -1,3 +1,4 @@
-﻿  DevUIObject.cpp
-e:\toantv\stm\2.source c#\stm_testdevice\devuiobject\devuiobject.cpp(33): warning C4101: 'lblPtr': unreferenced local variable
+﻿  Button.cpp
+e:\toantv\stm\2.source c#\stm_testdevice\devuiobject\testcpp\button.cpp(69): warning C4930: 'B b(void)': prototyped function not called (was a variable definition intended?)
+e:\toantv\stm\2.source c#\stm_testdevice\devuiobject\testcpp\button.cpp(70): warning C4930: 'C c(void)': prototyped function not called (was a variable definition intended?)
   DevUIObject.vcxproj -> E:\ToanTV\STM\2.source c#\STM_TestDevice\Debug\DevUIObject.exe

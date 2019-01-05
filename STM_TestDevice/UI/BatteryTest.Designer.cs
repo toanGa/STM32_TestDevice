@@ -185,10 +185,11 @@ namespace STM_TestDevice.UI
             // 
             // batteryDetailControl
             // 
+            this.batteryDetailControl.AutoSize = true;
             this.batteryDetailControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(0)))));
             this.batteryDetailControl.Location = new System.Drawing.Point(9, 39);
             this.batteryDetailControl.Name = "batteryDetailControl";
-            this.batteryDetailControl.Size = new System.Drawing.Size(1002, 536);
+            this.batteryDetailControl.Size = new System.Drawing.Size(1002, 541);
             this.batteryDetailControl.TabIndex = 0;
             // 
             // button13
@@ -200,6 +201,9 @@ namespace STM_TestDevice.UI
             this.button13.Text = "Test";
             this.button13.UseVisualStyleBackColor = true;
             this.button13.Click += new System.EventHandler(this.buttonTest_Click);
+            this.button13.KeyDown += new System.Windows.Forms.KeyEventHandler(this.button13_KeyDown);
+            this.button13.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.button13_KeyPress);
+            this.button13.KeyUp += new System.Windows.Forms.KeyEventHandler(this.button13_KeyUp);
             // 
             // tabPageSetting
             // 

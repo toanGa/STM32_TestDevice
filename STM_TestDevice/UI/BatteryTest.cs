@@ -921,6 +921,19 @@ namespace STM_TestDevice.UI
             //panelFileConfig.BringToFront();
         }
 
+        private void button13_KeyDown(object sender, KeyEventArgs e)
+        {
+            Console.WriteLine("Key down\r\n");
+        }
 
+        private void button13_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Console.WriteLine("Key Press\r\n");
+        }
+
+        private void button13_KeyUp(object sender, KeyEventArgs e)
+        {
+            Console.WriteLine("Key Up\r\n");
+        }
     }
 }
