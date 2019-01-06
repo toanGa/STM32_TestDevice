@@ -1,4 +1,21 @@
-﻿  Button.cpp
-e:\toantv\stm\2.source c#\stm_testdevice\devuiobject\testcpp\button.cpp(69): warning C4930: 'B b(void)': prototyped function not called (was a variable definition intended?)
-e:\toantv\stm\2.source c#\stm_testdevice\devuiobject\testcpp\button.cpp(70): warning C4930: 'C c(void)': prototyped function not called (was a variable definition intended?)
-  DevUIObject.vcxproj -> E:\ToanTV\STM\2.source c#\STM_TestDevice\Debug\DevUIObject.exe
+﻿  stdafx.cpp
+  Window.cpp
+  DevUIObject.cpp
+e:\work\stm32_testdevice\devuiobject\devuiobject.cpp(33): warning C4101: 'lblPtr': unreferenced local variable
+  Control.cpp
+  Button.cpp
+e:\work\stm32_testdevice\devuiobject\testcpp\button.cpp(70): warning C4930: 'C c(void)': prototyped function not called (was a variable definition intended?)
+  Label.cpp
+  Panel.cpp
+  Generating Code...
+Window.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaint(class PaintEventArgs)" (?OnPaint@Control@@MAEXVPaintEventArgs@@@Z)
+Panel.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaint(class PaintEventArgs)" (?OnPaint@Control@@MAEXVPaintEventArgs@@@Z)
+Label.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaint(class PaintEventArgs)" (?OnPaint@Control@@MAEXVPaintEventArgs@@@Z)
+Button.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaint(class PaintEventArgs)" (?OnPaint@Control@@MAEXVPaintEventArgs@@@Z)
+Control.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaint(class PaintEventArgs)" (?OnPaint@Control@@MAEXVPaintEventArgs@@@Z)
+Window.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaintBackground(class PaintEventArgs)" (?OnPaintBackground@Control@@MAEXVPaintEventArgs@@@Z)
+Panel.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaintBackground(class PaintEventArgs)" (?OnPaintBackground@Control@@MAEXVPaintEventArgs@@@Z)
+Label.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaintBackground(class PaintEventArgs)" (?OnPaintBackground@Control@@MAEXVPaintEventArgs@@@Z)
+Button.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaintBackground(class PaintEventArgs)" (?OnPaintBackground@Control@@MAEXVPaintEventArgs@@@Z)
+Control.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall Control::OnPaintBackground(class PaintEventArgs)" (?OnPaintBackground@Control@@MAEXVPaintEventArgs@@@Z)
+E:\WORK\STM32_TestDevice\Debug\DevUIObject.exe : fatal error LNK1120: 2 unresolved externals

@@ -98,6 +98,47 @@ public:
 	int All;
 }Padding;
 
+class PaintEventArgs : public EventArgs
+{
+
+};
+
+typedef struct
+{
+public:
+	//
+	// Summary:
+	//     Gets or sets the height of this System.Drawing.Rectangle structure.
+	//
+	// Returns:
+	//     The height of this System.Drawing.Rectangle structure. The default is 0.
+	int Height;
+		//
+		// Summary:
+		//     Gets or sets the width of this System.Drawing.Rectangle structure.
+		//
+		// Returns:
+		//     The width of this System.Drawing.Rectangle structure. The default is 0.
+	int Width;
+		//
+		// Summary:
+		//     Gets or sets the y-coordinate of the upper-left corner of this System.Drawing.Rectangle
+		//     structure.
+		//
+		// Returns:
+		//     The y-coordinate of the upper-left corner of this System.Drawing.Rectangle structure.
+		//     The default is 0.
+	int Y;
+		//
+		// Summary:
+		//     Gets or sets the x-coordinate of the upper-left corner of this System.Drawing.Rectangle
+		//     structure.
+		//
+		// Returns:
+		//     The x-coordinate of the upper-left corner of this System.Drawing.Rectangle structure.
+		//     The default is 0.
+	int X;
+}Rectangle;
 
 typedef void(*EventHandler)(void* sender, EventArgs e);
 typedef void(*KeyEventHandler)(void* sender, KeyEventArgs e);
@@ -122,6 +163,8 @@ public:
 	Point Location;
 	int Width;
 	int Height;
+
+	//Rectangle DisplayRectangle;
 	void* Tag;
 	int TabIndex;
 	bool Enable;
@@ -137,6 +180,7 @@ public:
 	Color BackColor;
 	Image BackImage;
 	Color ForeColor;
+	Rectangle DisplayRectangle;
 
 	EventHandler TextChanged;
 	KeyEventHandler KeyDown;
@@ -171,5 +215,23 @@ protected:
 	virtual void OnKeyDown(KeyEventArgs e);
 	virtual void OnKeyPress(KeyEventArgs e);
 	virtual void OnKeyUp(KeyEventArgs e);
+
+	//
+	// Summary:
+	//     Raises the System.Windows.Forms.Control.Paint event.
+	//
+	// Parameters:
+	//   e:
+	//     A System.Windows.Forms.PaintEventArgs that contains the event data.
+	virtual void OnPaint(PaintEventArgs e);
+	//
+	// Summary:
+	//     Paints the background of the control.
+	//
+	// Parameters:
+	//   pevent:
+	//     A System.Windows.Forms.PaintEventArgs that contains information about the control
+	//     to paint.
+	virtual void OnPaintBackground(PaintEventArgs pevent);
 };
 

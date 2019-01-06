@@ -66,6 +66,6 @@ class C : public A
 
 void TestABC()
 {
-	B b();
+	B bb = B();
 	C c();
 }

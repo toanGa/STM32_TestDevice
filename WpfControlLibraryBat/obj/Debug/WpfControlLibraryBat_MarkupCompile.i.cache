@@ -4,7 +4,7 @@
 library
 C#
 .cs
-E:\ToanTV\STM\2.source c#\STM_TestDevice\WpfControlLibraryBat\obj\Debug\
+E:\WORK\STM32_TestDevice\WpfControlLibraryBat\obj\Debug\
 WpfControlLibraryBat
 none
 false
@@ -12,9 +12,9 @@ DEBUG;TRACE
 
 2-787444792
 
-9-2031966433
+91983515438
 131569487696
 UserControl1.xaml;Window1.xaml;
 
-False
+True
 

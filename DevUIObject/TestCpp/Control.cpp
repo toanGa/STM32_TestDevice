@@ -12,6 +12,11 @@ Control::Control()
     KeyDown = NULL;
     KeyPress = NULL;
     KeyUp = NULL;
+
+	DisplayRectangle.X = Location.x;
+	DisplayRectangle.Y = Location.y;
+	DisplayRectangle.Width = Width;
+	DisplayRectangle.Height = Height;
 }
 
 
@@ -85,6 +90,14 @@ void Control::OnKeyUp(KeyEventArgs e)
 	{
 		KeyUp(this, e);
 	}
+}
+
+void Control::OnPaint(PaintEventArgs e)
+{
+}
+
+void Control::OnPaintBackground(PaintEventArgs pevent)
+{
 }
 
 void Control::BringToFront()

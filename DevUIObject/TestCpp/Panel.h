@@ -1,5 +1,5 @@
 #pragma once
-#include "TestCpp\Control.h"
+#include "Control.h"
 class Panel :
 	public Control
 {
