@@ -2,7 +2,8 @@
 #include<stdint.h>
 #include<stdio.h>
 #include<vector>
-
+#include<list>
+#include<string.h>
 using namespace std;
 
 class Color
@@ -100,7 +101,17 @@ public:
 
 class PaintEventArgs : public EventArgs
 {
-
+public:
+	typedef enum
+	{
+		PaintDrawControl,
+		PaintShowControl,
+		PaintHideControl,
+		PaintDrawPartControl,
+		PaintShowPartControl
+	}PaintOption;
+	// modify here
+	PaintOption PainOption;
 };
 
 typedef struct
@@ -146,10 +157,20 @@ typedef void(*KeyEventHandler)(void* sender, KeyEventArgs e);
 
 class Control
 {
+private:
+	vector<Control*> ListControlAdded;
+	Control* MasterControl;
+	bool Enable;
+	bool Visible;
+	int TextSize;
+protected:
+	Control * Focusing;
 public:
 	typedef enum
 	{
 		ControlBase,
+		ControlWindow,
+		ControlPanel,
 		ControlButton,
 		ControlLabel
 	}EControlType;
@@ -167,8 +188,6 @@ public:
 	//Rectangle DisplayRectangle;
 	void* Tag;
 	int TabIndex;
-	bool Enable;
-	bool Visible;
 
 	const Font DefaultFont();
 	const Color DefaultForeColor();
@@ -180,26 +199,72 @@ public:
 	Color BackColor;
 	Image BackImage;
 	Color ForeColor;
-	Rectangle DisplayRectangle;
+	Rectangle DisplayRectangle;// protected
 
+	// Callback event
+	EventHandler LostFocus;
 	EventHandler TextChanged;
 	KeyEventHandler KeyDown;
 	KeyEventHandler KeyPress;
 	KeyEventHandler KeyUp;
 
+	//
+	// Summary:
+	//     Brings the control to the front of the z-order.
 	void BringToFront();
 	bool Contains(Control* ctl);
 
-	virtual void Add(Control* value);
-	virtual void Clear();
-	virtual void Remove(Control* value);
+	void Add(Control* value);
+	void Clear();
+	void Remove(Control* value);
+	Control* GetNextControl(Control* ctl, bool forward);
 
-	virtual void Update();
-	virtual void Hide();
-	virtual void Show();
-	virtual void Draw();
-	virtual void Dispose();
+	//
+	// Summary:
+	//     Causes the control to redraw the invalidated regions within its client area.
+	void Update();
+	//
+	// Summary:
+	//     Conceals the control from the user.
+	void Hide();
+	//
+	// Summary:
+	//     Displays the control to the user.
+	void Show();
+	void Draw();
+	//
+	// Summary:
+	//     Releases the unmanaged resources used by the System.Windows.Forms.Control and
+	//     its child controls and optionally releases the managed resources.
+	//
+	// Parameters:
+	//   disposing:
+	//     true to release both managed and unmanaged resources; false to release only unmanaged
+	//     resources.
+	void Dispose(bool disposing);
 
+	void Dispose();
+
+	//
+	// Summary:
+	//     Sets input focus to the control.
+	//
+	// Returns:
+	//     true if the input focus request was successful; otherwise, false.
+	bool Focus();
+
+	Control* FindWindow();
+
+	virtual char* GetText();
+	virtual void SetText(char* content);
+
+	int GetTextSize();
+	bool SetTextSize(int size);
+
+	//
+	// Summary:
+	//     Forces the control to invalidate its client area and immediately redraw itself
+	//     and any child controls.
 	virtual void Refresh();
 	virtual void ResetBackColor();
 	virtual void ResetFont();
@@ -211,11 +276,19 @@ public:
 	void run();
 	
 protected:
+	// lifecycle function (for Application)
+	//virtual void OnCreate();
+	//virtual void OnStart();
+	//virtual void OnResume();
+	//virtual void OnPause();
+	//virtual void OnStop();
+	//virtual void OnDestroy();
+
 	virtual void OnTextChanged(EventArgs e);
 	virtual void OnKeyDown(KeyEventArgs e);
 	virtual void OnKeyPress(KeyEventArgs e);
 	virtual void OnKeyUp(KeyEventArgs e);
-
+	virtual void OnLostFocus(EventArgs e);
 	//
 	// Summary:
 	//     Raises the System.Windows.Forms.Control.Paint event.

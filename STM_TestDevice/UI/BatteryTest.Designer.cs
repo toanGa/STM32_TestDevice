@@ -36,7 +36,6 @@ namespace STM_TestDevice.UI
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panelMain = new System.Windows.Forms.Panel();
             this.labelSysInfo = new System.Windows.Forms.Label();
-            this.batteryDetailControl = new STM_TestDevice.UI.BatteryDetailControl();
             this.button13 = new System.Windows.Forms.Button();
             this.tabPageSetting = new System.Windows.Forms.TabPage();
             this.panelDeviceConfig = new System.Windows.Forms.Panel();
@@ -109,6 +108,7 @@ namespace STM_TestDevice.UI
             this.serialPortData = new System.IO.Ports.SerialPort(this.components);
             this.timerUpdateData = new System.Windows.Forms.Timer(this.components);
             this.timerSystemChecking = new System.Windows.Forms.Timer(this.components);
+            this.batteryDetailControl = new STM_TestDevice.UI.BatteryDetailControl();
             this.tabControl.SuspendLayout();
             this.tabPageMain.SuspendLayout();
             this.panelMain.SuspendLayout();
@@ -182,15 +182,6 @@ namespace STM_TestDevice.UI
             this.labelSysInfo.Size = new System.Drawing.Size(377, 24);
             this.labelSysInfo.TabIndex = 1;
             this.labelSysInfo.Text = "System not running, please go to Setting tab";
-            // 
-            // batteryDetailControl
-            // 
-            this.batteryDetailControl.AutoSize = true;
-            this.batteryDetailControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(0)))));
-            this.batteryDetailControl.Location = new System.Drawing.Point(9, 39);
-            this.batteryDetailControl.Name = "batteryDetailControl";
-            this.batteryDetailControl.Size = new System.Drawing.Size(1002, 541);
-            this.batteryDetailControl.TabIndex = 0;
             // 
             // button13
             // 
@@ -1002,6 +993,15 @@ namespace STM_TestDevice.UI
             this.timerSystemChecking.Enabled = true;
             this.timerSystemChecking.Interval = 1000;
             this.timerSystemChecking.Tick += new System.EventHandler(this.timerSystemChecking_Tick);
+            // 
+            // batteryDetailControl
+            // 
+            this.batteryDetailControl.AutoSize = true;
+            this.batteryDetailControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(0)))));
+            this.batteryDetailControl.Location = new System.Drawing.Point(9, 39);
+            this.batteryDetailControl.Name = "batteryDetailControl";
+            this.batteryDetailControl.Size = new System.Drawing.Size(1002, 541);
+            this.batteryDetailControl.TabIndex = 0;
             // 
             // BatteryTest
             // 

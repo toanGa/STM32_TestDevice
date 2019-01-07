@@ -4,6 +4,8 @@
 
 Panel::Panel()
 {
+	Name = (char*)"Panel";
+	ControlType = ControlPanel;
 }
 
 

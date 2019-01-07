@@ -4,6 +4,8 @@
 
 Window::Window()
 {
+	Name = (char*)"Window";
+	ControlType = ControlWindow;
 }
 
 

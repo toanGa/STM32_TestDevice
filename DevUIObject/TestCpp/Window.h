@@ -6,5 +6,14 @@ class Window :
 public:
 	Window();
 	~Window();
+
+protected:
+	// lifecycle function (for Window)
+	//virtual void OnCreate();
+	//virtual void OnStart();
+	//virtual void OnResume();
+	//virtual void OnPause();
+	//virtual void OnStop();
+	//virtual void OnDestroy();
 };
 

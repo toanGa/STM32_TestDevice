@@ -12,4 +12,5 @@ Label::Label()
 
 Label::~Label()
 {
+
 }

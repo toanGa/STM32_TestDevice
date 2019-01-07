@@ -39,6 +39,12 @@
     <ClInclude Include="TestCpp\Panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IContainable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IScrollAble.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -60,6 +66,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestCpp\Panel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IContainable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IScrollAble.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
