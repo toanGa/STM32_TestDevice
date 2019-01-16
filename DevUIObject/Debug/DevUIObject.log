@@ -1,13 +1,11 @@
-﻿  stdafx.cpp
-  IContainable.cpp
-  IScrollAble.cpp
-  Panel.cpp
-  Label.cpp
-  Button.cpp
-e:\toantv\stm\2.source c#\stm_testdevice\devuiobject\testcpp\button.cpp(70): warning C4930: 'C c(void)': prototyped function not called (was a variable definition intended?)
-  Control.cpp
-  DevUIObject.cpp
-e:\toantv\stm\2.source c#\stm_testdevice\devuiobject\devuiobject.cpp(57): warning C4101: 'lblPtr': unreferenced local variable
-  Window.cpp
+﻿  EditText.cpp
+  Message.cpp
   Generating Code...
-  DevUIObject.vcxproj -> E:\ToanTV\STM\2.source c#\STM_TestDevice\Debug\DevUIObject.exe
+EditText.obj : error LNK2001: unresolved external symbol "public: virtual void __thiscall EditText::SetText(char *)" (?SetText@EditText@@UAEXPAD@Z)
+EditText.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall EditText::WndProc(class Message)" (?WndProc@EditText@@MAEXVMessage@@@Z)
+EditText.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall EditText::OnKeyDown(class KeyEventArgs)" (?OnKeyDown@EditText@@MAEXVKeyEventArgs@@@Z)
+EditText.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall EditText::OnKeyPress(class KeyEventArgs)" (?OnKeyPress@EditText@@MAEXVKeyEventArgs@@@Z)
+EditText.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall EditText::OnKeyUp(class KeyEventArgs)" (?OnKeyUp@EditText@@MAEXVKeyEventArgs@@@Z)
+EditText.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall EditText::OnPaint(class PaintEventArgs)" (?OnPaint@EditText@@MAEXVPaintEventArgs@@@Z)
+EditText.obj : error LNK2001: unresolved external symbol "protected: virtual void __thiscall EditText::OnPaintBackground(class PaintEventArgs)" (?OnPaintBackground@EditText@@MAEXVPaintEventArgs@@@Z)
+E:\ToanTV\STM\2.source c#\STM_TestDevice\Debug\DevUIObject.exe : fatal error LNK1120: 7 unresolved externals

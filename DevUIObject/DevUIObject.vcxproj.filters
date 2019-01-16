@@ -39,10 +39,13 @@
     <ClInclude Include="TestCpp\Panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IContainable.h">
+    <ClInclude Include="TestCpp\IContainable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IScrollAble.h">
+    <ClInclude Include="TestCpp\Message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCpp\EditText.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,10 +71,13 @@
     <ClCompile Include="TestCpp\Panel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IContainable.cpp">
+    <ClCompile Include="TestCpp\IContainable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IScrollAble.cpp">
+    <ClCompile Include="TestCpp\Message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCpp\EditText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

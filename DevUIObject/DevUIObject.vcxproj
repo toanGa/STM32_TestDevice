@@ -148,8 +148,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="DevUIObject.h" />
-    <ClInclude Include="IContainable.h" />
-    <ClInclude Include="IScrollAble.h" />
+    <ClInclude Include="TestCpp\EditText.h" />
+    <ClInclude Include="TestCpp\IContainable.h" />
+    <ClInclude Include="TestCpp\Message.h" />
     <ClInclude Include="TestCpp\Panel.h" />
     <ClInclude Include="TestCpp\Label.h" />
     <ClInclude Include="TestCpp\Button.h" />
@@ -159,8 +160,9 @@
     <ClInclude Include="TestCpp\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IContainable.cpp" />
-    <ClCompile Include="IScrollAble.cpp" />
+    <ClCompile Include="TestCpp\EditText.cpp" />
+    <ClCompile Include="TestCpp\IContainable.cpp" />
+    <ClCompile Include="TestCpp\Message.cpp" />
     <ClCompile Include="TestCpp\Panel.cpp" />
     <ClCompile Include="TestCpp\Label.cpp" />
     <ClCompile Include="TestCpp\Button.cpp" />
