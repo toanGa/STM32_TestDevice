@@ -6,11 +6,10 @@
 #include "assert.h"
 #include "uart_console.h"
 #include "Timer.h"
-#include "SYSCALL\syscall.h"
 #include <cstdio>
-//#include 	"typing.h"
 
-////TextBox tmpBox = TextBox(true);
+// tmp define
+#define NtGetTickCount Clock_getTicks
 
 TextBox::TextBox()
 {
@@ -31,7 +30,7 @@ TextBox::TextBox()
 	this->content = (uint16_t *)calloc(maxLenText + 2, sizeof(uint16_t));
 
 	this->isMultiLine = 1;
-	this->isTypeTextName = 0;
+	this->TextType = TextTypeNormal;
 	this->content_len = 0;
 	this->contentIndex = -1;
 	this->enableScrollBar = true;
@@ -76,6 +75,11 @@ void TextBox::SetText(uint16_t *text)
 	this->Update();
 }
 
+uint16_t * TextBox::Text()
+{
+	return this->content;
+}
+
 int TextBox::GetTextSize()
 {
 	return maxLenText;
@@ -88,7 +92,13 @@ bool TextBox::SetTextSize(int size)
 	{
 		free(this->content);
 		this->content = (uint16_t *)calloc(maxLenText + 1, sizeof(uint16_t));
+		if(this->content == NULL)
+		{
+			return false;
+		}
 	}
+
+	return true;
 }
 
 void TextBox::SetLocation(GDI::Point location)
@@ -535,14 +545,13 @@ void TextBox::LeftPress()
 			}
 		}
 
-		if (0 == this->isTypeTextName)
+		if (TextTypeNormal == this->TextType)
 		{
-			keyboard.pressTypeChangeAuto(&this->content[0], &keyboard.PressType,
-										 &this->contentIndex);
+			keyboard.pressTypeChangeAuto(&this->content[0], &this->contentIndex);
 		}
-		else if (1 == this->isTypeTextName)
+		else if (TextTypeName == this->TextType)
 		{
-			keyboard.pressTypeNameChangeAuto(&this->content[0], &keyboard.PressType, &this->contentIndex);
+			keyboard.pressTypeNameChangeAuto(&this->content[0], &this->contentIndex);
 		}
 		else
 		{
@@ -593,14 +602,14 @@ void TextBox::RightPress()
 			// normal case
 		}
 
-		if (0 == this->isTypeTextName)
+		if (TextTypeNormal == this->TextType)
 		{
-			keyboard.pressTypeChangeAuto(&this->content[0], &keyboard.PressType,
+			keyboard.pressTypeChangeAuto(&this->content[0],
 										 &this->contentIndex);
 		}
-		else if (1 == this->isTypeTextName)
+		else if (TextTypeName == this->TextType)
 		{
-			keyboard.pressTypeNameChangeAuto(&this->content[0], &keyboard.PressType, &this->contentIndex);
+			keyboard.pressTypeNameChangeAuto(&this->content[0], &this->contentIndex);
 		}
 		else
 		{
@@ -623,7 +632,7 @@ void TextBox::AddKeyboardChar(uint8_t keyChar)
 	if (lenInstance < this->maxLenText)
 	{
 		keyboard.getMsgContent(&this->content[0], this->maxLenText, keyChar,
-							   &keyboard.PressType, &this->contentIndex, this->isTypeTextName);
+							    &this->contentIndex, this->TextType);
 		mTimeClock = NtGetTickCount();
 	}
 	else
@@ -642,7 +651,7 @@ void TextBox::AddKeyboardChar(uint8_t keyChar)
 
 		//		tmpBox = *this;
 		//		isAddNewKey = keyboard.getMsgContent(&this->content[0], this->maxLenText + 1, keyChar,
-		//			&keyboard.PressType, &this->contentIndex, this->isTypeTextName);
+		//			&keyboard.PressType, &this->contentIndex, this->TextType);
 		//		if (isAddNewKey)
 		//		{
 		//			*this = tmpBox;
@@ -655,7 +664,7 @@ void TextBox::AddKeyboardChar(uint8_t keyChar)
 		int16_t oldContenIndex = this->contentIndex;
 
 		isAddNewKey = keyboard.getMsgContent(&this->content[0], this->maxLenText + 1, keyChar,
-											 &keyboard.PressType, &this->contentIndex, this->isTypeTextName);
+											 &this->contentIndex, this->TextType);
 		if (isAddNewKey)
 		{
 			////*this = tmpBox;
@@ -701,20 +710,20 @@ void TextBox::ClearChar()
 		{
 			if (isEmojiCode(this->content, this->contentIndex - 1))
 			{
-				keyboard.clearUCS2Content(&this->content[0], &keyboard.PressType,
+				keyboard.clearUCS2Content(&this->content[0],
 										  &this->contentIndex);
-				keyboard.clearUCS2Content(&this->content[0], &keyboard.PressType,
+				keyboard.clearUCS2Content(&this->content[0],
 										  &this->contentIndex);
 			}
 			else
 			{
-				keyboard.clearUCS2Content(&this->content[0], &keyboard.PressType,
+				keyboard.clearUCS2Content(&this->content[0],
 										  &this->contentIndex);
 			}
 		}
 		else
 		{
-			keyboard.clearUCS2Content(&this->content[0], &keyboard.PressType,
+			keyboard.clearUCS2Content(&this->content[0],
 									  &this->contentIndex);
 		}
 		// end of find text info
@@ -739,20 +748,20 @@ void TextBox::ClearChar()
 			}
 		}
 
-		if (0 == this->isTypeTextName)
+		if (TextTypeNormal == this->TextType)
 		{
-			keyboard.pressTypeChangeAuto(&this->content[0], &keyboard.PressType,
+			keyboard.pressTypeChangeAuto(&this->content[0],
 										 &this->contentIndex);
 		}
-		else if (1 == this->isTypeTextName)
+		else if (TextTypeName == this->TextType)
 		{
-			keyboard.pressTypeNameChangeAuto(&this->content[0], &keyboard.PressType, &this->contentIndex);
+			keyboard.pressTypeNameChangeAuto(&this->content[0], &this->contentIndex);
 		}
 		else
 		{
 		}
 
-		if (FindUppercaseCharactor(&Charactor) && (this->isTypeTextName == 1 || this->isTypeTextName == 0) && keyboard.PressType != keyboard.PRESS_TYPES_NUMBER_ONLY && keyboard.PressType != keyboard.PRESS_TYPE_EN_UPPERCASE_ALL && keyboard.PressType != keyboard.PRESS_TYPE_VI_UPPERCASE_ALL)
+		if (FindUppercaseCharactor(&Charactor) && (this->TextType == TextTypeName || this->TextType == TextTypeNormal) && keyboard.PressType != keyboard.PRESS_TYPES_NUMBER_ONLY && keyboard.PressType != keyboard.PRESS_TYPE_EN_UPPERCASE_ALL && keyboard.PressType != keyboard.PRESS_TYPE_VI_UPPERCASE_ALL)
 		{
 			keyboard.reset_typePress();
 		}
@@ -772,20 +781,20 @@ void TextBox::ForceClearChar()
 			if (isEmojiCode(this->content, this->contentIndex - 1)
 				/*|| (10 == this->content[1] && 10 == this->content[0])*/)
 			{
-				keyboard.forceClearUnicode(&this->content[0], &keyboard.PressType,
+				keyboard.forceClearUnicode(&this->content[0],
 										   &this->contentIndex);
-				keyboard.forceClearUnicode(&this->content[0], &keyboard.PressType,
+				keyboard.forceClearUnicode(&this->content[0],
 										   &this->contentIndex);
 			}
 			else
 			{
-				keyboard.forceClearUnicode(&this->content[0], &keyboard.PressType,
+				keyboard.forceClearUnicode(&this->content[0],
 										   &this->contentIndex);
 			}
 		}
 		else
 		{
-			keyboard.forceClearUnicode(&this->content[0], &keyboard.PressType,
+			keyboard.forceClearUnicode(&this->content[0],
 									   &this->contentIndex);
 		}
 		// end of find text info
@@ -810,20 +819,20 @@ void TextBox::ForceClearChar()
 			}
 		}
 
-		if (0 == this->isTypeTextName)
+		if (TextTypeNormal == this->TextType)
 		{
-			keyboard.pressTypeChangeAuto(&this->content[0], &keyboard.PressType,
+			keyboard.pressTypeChangeAuto(&this->content[0],
 										 &this->contentIndex);
 		}
-		else if (1 == this->isTypeTextName)
+		else if (TextTypeName == this->TextType)
 		{
-			keyboard.pressTypeNameChangeAuto(&this->content[0], &keyboard.PressType, &this->contentIndex);
+			keyboard.pressTypeNameChangeAuto(&this->content[0], &this->contentIndex);
 		}
 		else
 		{
 		}
 
-		if (FindUppercaseCharactor(&Charactor) && (this->isTypeTextName == 1 || this->isTypeTextName == 0) && keyboard.PressType != keyboard.PRESS_TYPES_NUMBER_ONLY && keyboard.PressType != keyboard.PRESS_TYPE_EN_UPPERCASE_ALL && keyboard.PressType != keyboard.PRESS_TYPE_VI_UPPERCASE_ALL)
+		if (FindUppercaseCharactor(&Charactor) && (this->TextType == TextTypeName || this->TextType == TextTypeNormal) && keyboard.PressType != keyboard.PRESS_TYPES_NUMBER_ONLY && keyboard.PressType != keyboard.PRESS_TYPE_EN_UPPERCASE_ALL && keyboard.PressType != keyboard.PRESS_TYPE_VI_UPPERCASE_ALL)
 		{
 			keyboard.reset_typePress();
 		}
@@ -845,7 +854,7 @@ void TextBox::AddChar(int16_t keyChar)
 	if (lenInstance < this->maxLenText)
 	{
 		keyboard.getMsgContent(&this->content[0], this->maxLenText, keyChar,
-							   &keyboard.PressType, &this->contentIndex, this->isTypeTextName);
+							   &this->contentIndex, this->TextType);
 		mTimeClock = NtGetTickCount();
 	}
 	else
@@ -869,7 +878,7 @@ void TextBox::AddChar(int16_t keyChar)
 		int16_t oldContenIndex = this->contentIndex;
 
 		isAddNewKey = keyboard.getMsgContent(&this->content[0], this->maxLenText + 1, keyChar,
-											 &keyboard.PressType, &this->contentIndex, this->isTypeTextName);
+											 &this->contentIndex, this->TextType);
 		if (isAddNewKey)
 		{
 			////*this = tmpBox;
@@ -1082,23 +1091,22 @@ void TextBox::GetKey(KeyEventArgs e, KeyEventHandler KeyEventFn)
 
 		if (TextChanged != NULL)
 		{
-			TextChanged(this, e);
+			(this->*TextChanged)(this, e);
 		}
 		break;
 	case KEY_HASHTAG:
-		switch (keyboard.PressType)
+		if(TextTypeNumber == this->TextType)
 		{
-		case KeyBoard::PRESS_TYPES_NUMBER_ONLY:
 			this->AddKeyboardChar(e.KeyChar);
 
 			if (TextChanged != NULL)
 			{
-				TextChanged(this, e);
+				(this->*TextChanged)(this, e);
 			}
-			break;
-		default:
-			keyboard.changePressType(this->content, &keyboard.PressType, &this->contentIndex);
-			break;
+		}
+		else
+		{
+			keyboard.changePressType(this->content, &this->contentIndex);
 		}
 	default:
 		break;
@@ -1110,7 +1118,7 @@ update_ui:
 
 	if (KeyEventFn != NULL)
 	{
-		KeyEventFn(this, e);
+		(this->*KeyEventFn)(this, e);
 	}
 }
 

@@ -21,11 +21,17 @@ void Label::SetText(char * content)
 	Control::SetText(content);
 
 	// update width
-	uint16_t* buff = new uint16_t[strlen(GetText()) + 1];
+	int size = strlen(GetText()) + 1;
+	uint16_t* buff = (uint16_t*)malloc(size * sizeof(uint16_t));
 	getUniFromStr(buff, GetText());
-	Width = getPixelLength(buff, FontText);
+	uint16_t newWidth = GDI::Draw::PixelLen(buff, FontText);
+	if (this->Width < newWidth)
+	{
+		this->Width = newWidth;
+	}
+
 	this->DisplayRectangle = GDI::Rectangle(this->Location, this->Width, this->Height);
-	delete buff;
+	free(buff);
 
 	// Update UI
 	this->Update();

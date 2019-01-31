@@ -16,12 +16,18 @@
 #include "Timer.h"
 
 #include "FWDebug.h"
-
+#include "Unicode.h"
 using namespace std;
 using namespace GDI;
 
+#ifndef override
 #define override
+#endif
+
 #define OVERRIDE
+
+#define ON_EVENT_CALLBACK(memberFxn) static_cast<void(Control::*)(void* sender, EventArgs e)>(&memberFxn) 
+#define ON_KEY_CALLBACK(memberFxn) static_cast<void(Control::*)(void* sender, KeyEventArgs e)>(&memberFxn) 
 
 //class Color
 //{
@@ -45,17 +51,25 @@ using namespace GDI;
 
 class Control
 {
+protected:
+	typedef void(Control::*EventHandler)(void* sender, EventArgs e);
+	typedef void(Control::*KeyEventHandler)(void* sender, KeyEventArgs e);
 private:
+
+
 	Control* MasterControl;
 	char* Text;
 	int TextSize;
+	bool UnicodeText;
 	static const int DEFAULT_TEXT_SIZE;
 
 	vector<Control*> ListControlAdded;
+	bool IsDisposed;
 	// timer for control handler with timer
 	// just one timer share all object
 	static void CallBackControlTimer(void* sender, EventArgs e);
 	static Timer ControlTimer;
+
 protected:
 	Control * Focusing;
 	bool Enable;
@@ -69,6 +83,8 @@ public:
 		ControlPanel,
 		ControlButton,
 		ControlLabel,
+		ControlCustomScrollBar,
+		ControlVScrollBar,
 		ControlUser,
 	}EControlType;
 	
@@ -100,12 +116,14 @@ public:
 	Color BoderColor;
 	int BoderSize;
 
+	// Rectangle with master position
 	GDI::Rectangle DisplayRectangle;// protected
 
 	// Callback event
 	EventHandler LostFocus;
 	EventHandler AppropFocus;
 	EventHandler TextChanged;
+	EventHandler Disposed;
 	KeyEventHandler KeyDown;
 	KeyEventHandler KeyPress;
 	KeyEventHandler KeyUp;
@@ -121,6 +139,7 @@ public:
 	void Remove(Control* value);
 	Control* GetNextControl(Control* ctl, bool forward);
 	bool FocusNextControl(bool forward);
+
 	virtual GDI::Point RelativeLocation();
 	GDI::Rectangle ControlRectangle();
 	//
@@ -157,11 +176,43 @@ public:
 	//     true if the input focus request was successful; otherwise, false.
 	bool Focus();
 	bool IsFocusing();
-	Control* FindWindow();
 
+    //
+    // Summary:
+    //     Gets or sets a value indicating whether the control can respond to user interaction.
+    //
+    // Returns:
+    //     true if the control can respond to user interaction; otherwise, false. The default
+    //     is true.
+	void Enabled(bool value);
+	bool IsEnabled();
+
+    //
+    // Summary:
+    //     Temporarily suspends the layout logic for the control.
+    void SuspendLayout();
+    //
+    // Summary:
+    //     Resumes usual layout logic.
+    void ResumeLayout();
+    //
+    // Summary:
+    //     Resumes usual layout logic, optionally forcing an immediate layout of pending
+    //     layout requests.
+    //
+    // Parameters:
+    //   performLayout:
+    //     true to execute pending layout requests; otherwise, false.
+    void ResumeLayout(bool performLayout);
+    void PerformLayout();
+	Control* FindWindow();
+	Control* FindMaster();
+	Control* FindControl(char* name);
 	virtual char* GetText();
 	virtual void SetText(char* content);
+	virtual void SetText(uint16_t* content);
 
+	bool IsUnicodeText();
 	int GetTextSize();
 	bool SetTextSize(int size);
 
@@ -210,5 +261,6 @@ protected:
 	virtual void OnHideControl(Control* control);
 	virtual void OnShowControl(Control* control);
 	virtual void OnDrawControl(Control* control);
+	virtual void OnDisposeControl(Control* control);
 };
 

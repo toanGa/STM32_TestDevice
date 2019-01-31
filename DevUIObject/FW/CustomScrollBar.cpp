@@ -4,6 +4,9 @@
 
 CustomScrollBar::CustomScrollBar()
 {
+	Name = (char*)"CustomScrollBar";
+	ControlType = ControlCustomScrollBar;
+
 	BackColor = GUI_GRAY;
 	colorPointer = GUI_GREEN;
 	sizePointer = 2;

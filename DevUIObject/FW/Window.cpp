@@ -1,6 +1,5 @@
 #include "Window.h"
-
-
+#include "Application.h"
 
 Window::Window()
 {
@@ -16,25 +15,60 @@ Window::Window()
 	BackColor = GUI_WHITE;
 	ForeColor = GUI_BLACK;
 
-
 	OnCreate();
+
+	PRINTF("Window Created:%s\r\n", this->Name);
 }
 
 
 Window::~Window()
 {
-
 	OnDestroy();
+	PRINTF("Window Destroyed:%s\r\n", this->Name);
 }
 
+// API from user
 void Window::Start()
 {
-	OnStart();
+//	OnStart();
+	// just call app api from user API
+	Application *app = Application::AppCurrent();
+	FWASSERT(app != NULL);
+
+	Window* currWd = app->CurrentWindow();
+	FWASSERT(currWd != NULL);
+
+	currWd->OnPause();
+
+	app->StartWindow(this);
+	currWd = app->CurrentWindow();
+	currWd->OnStart();
 }
 
 void Window::Stop()
 {
-	OnStop();
+	Application *app = Application::AppCurrent();
+	assert(app != NULL);
+
+	Window* currWd = app->CurrentWindow();
+	if(currWd != app->MainWindow())
+	{
+		currWd->OnStop();
+
+		currWd = app->CurrentWindow();
+		currWd->OnResume();
+	}
+	else
+	{
+		Application::Exit();
+	}
+}
+
+void Window::Dispose()
+{
+	EnableControlTimer(false);
+
+	Control::Dispose();
 }
 
 void Window::OnCreate()
@@ -44,20 +78,12 @@ void Window::OnCreate()
 
 	if (WindowCreate != NULL)
 	{
-		WindowCreate(this, e);
+		(this->*WindowCreate)(this, e);
 	}
 }
 
 void Window::OnStart()
 {
-//	PaintEventArgs pE;
-//	pE.PaintOption = PaintEventArgs::PaintShowControl;
-//
-//	OnPaintBackground(pE);
-//	OnPaint(pE);
-//
-//	GDI::Draw::OnShowScreen(GDI::Rectangle(this->Location, this->Width, this->Height));
-
 	this->Show();
 	
 	// TODO: implement event with detail args
@@ -65,18 +91,26 @@ void Window::OnStart()
 
 	if (WindowStart != NULL)
 	{
-		WindowStart(this, e);
+		(this->*WindowStart)(this, e);
 	}
 }
 
 void Window::OnResume()
 {
+	this->Show();
+
 	// TODO: implement event with detail args
 	EventArgs e;
 
+	if(this->AppropFocus != NULL)
+	{
+		(this->*AppropFocus)(this, e);
+	}
+
+
 	if (WindowResume != NULL)
 	{
-		WindowResume(this, e);
+		(this->*WindowResume)(this, e);
 	}
 }
 
@@ -86,9 +120,14 @@ void Window::OnPause()
 	// TODO: implement event with detail args
 	EventArgs e;
 
+	if(this->LostFocus != NULL)
+	{
+		(this->*LostFocus)(this, e);
+	}
+
 	if (WindowPause != NULL)
 	{
-		WindowPause(this, e);
+		(this->*WindowPause)(this, e);
 	}
 }
 
@@ -99,8 +138,10 @@ void Window::OnStop()
 
 	if (WindowStop != NULL)
 	{
-		WindowStop(this, e);
+		(this->*WindowStop)(this, e);
 	}
+
+	this->Dispose();
 }
 
 void Window::OnDestroy()
@@ -110,8 +151,10 @@ void Window::OnDestroy()
 
 	if (WindowDestroy != NULL)
 	{
-		WindowDestroy(this, e);
+		(this->*WindowDestroy)(this, e);
 	}
+
+	this->Dispose();
 }
 
 void Window::OnPaint(PaintEventArgs e)
@@ -159,27 +202,25 @@ void Window::OnPaint(PaintEventArgs e)
 
 void Window::OnPaintBackground(PaintEventArgs e)
 {
-	// TODO: Paint background for window
 	PRINTF("%s OnPaintBackground:", this->Name);
 
-	//GDI::Draw::DrawRect(GDI::Rectangle(this->Location.x, this->Location.y, this->Width - 1, this->Height - 1), this->BackColor);
-	//if (this->BackImage != NULL)
-	//{
-	//	GDI::Draw::DrawPicture(*this->BackImage, this->Location.x, this->Location.y);
-	//}
-
-	// paint event for window
+	// TODO: review: paint event for window
 	switch (e.PaintOption)
 	{
 		// draw window
 	case PaintEventArgs::PaintDrawControl:
 	{
 		PRINTF("PaintDrawControl\r\n");
-		this->DisplayRectangle = GDI::Rectangle(this->Location.x, this->Location.y, this->Width - 1, this->Height - 1);
-		GDI::Draw::DrawRect(DisplayRectangle, this->BackColor);
+		this->DisplayRectangle = GDI::Rectangle(this->Location.x, this->Location.y, this->Width, this->Height);
+
 		if (this->BackImage != NULL)
 		{
-			GDI::Draw::DrawPicture(*this->BackImage, this->Location.x, this->Location.y);
+			GDI::Draw::DrawRect(DisplayRectangle, GUI_BLACK);
+			GDI::Draw::DrawPicture(*this->BackImage, 0, 0, DisplayRectangle);
+		}
+		else
+		{
+			GDI::Draw::DrawRect(DisplayRectangle, this->BackColor);
 		}
 	}
 	break;
@@ -187,10 +228,15 @@ void Window::OnPaintBackground(PaintEventArgs e)
 	case PaintEventArgs::PaintDrawPartControl:
 	{
 		PRINTF("PaintDrawPartControl\r\n");
-		GDI::Draw::DrawRect(this->DisplayRectangle, this->BackColor);
+
 		if (this->BackImage != NULL)
 		{
-			GDI::Draw::DrawPicture(*this->BackImage, this->Location.x, this->Location.y);
+			GDI::Draw::DrawRect(DisplayRectangle, GUI_BLACK);
+			GDI::Draw::DrawPicture(*this->BackImage, 0, 0, DisplayRectangle);
+		}
+		else
+		{
+			GDI::Draw::DrawRect(this->DisplayRectangle, this->BackColor);
 		}
 	}
 	break;
@@ -206,12 +252,16 @@ void Window::OnPaintBackground(PaintEventArgs e)
 	{
 		PRINTF("PaintShowControl\r\n");
 		this->DisplayRectangle = GDI::Rectangle(this->Location.x, this->Location.y, this->Width - 1, this->Height - 1);
-		GDI::Draw::DrawRect(DisplayRectangle, this->BackColor);
+
 		if (this->BackImage != NULL)
 		{
-			GDI::Draw::DrawPicture(*this->BackImage, this->Location.x, this->Location.y);
+			GDI::Draw::DrawRect(DisplayRectangle, GUI_BLACK);
+			GDI::Draw::DrawPicture(*this->BackImage, 0, 0, DisplayRectangle);
 		}
-		// TODO: show method
+		else
+		{
+			GDI::Draw::DrawRect(DisplayRectangle, this->BackColor);
+		}
 		GDI::Draw::OnShowScreen(DisplayRectangle);
 	}
 	break;
@@ -219,12 +269,15 @@ void Window::OnPaintBackground(PaintEventArgs e)
 	case PaintEventArgs::PaintShowPartControl:
 	{
 		PRINTF("PaintShowPartControl\r\n");
-		GDI::Draw::DrawRect(this->DisplayRectangle, this->BackColor);
 		if (this->BackImage != NULL)
 		{
-			GDI::Draw::DrawPicture(*this->BackImage, this->Location.x, this->Location.y);
+			GDI::Draw::DrawRect(DisplayRectangle, GUI_BLACK);
+			GDI::Draw::DrawPicture(*this->BackImage, 0, 0, DisplayRectangle);
 		}
-		// TODO: show method
+		else
+		{
+			GDI::Draw::DrawRect(this->DisplayRectangle, this->BackColor);
+		}
 		GDI::Draw::OnShowScreen(this->DisplayRectangle);
 	}
 	break;
@@ -235,6 +288,7 @@ void Window::OnPaintBackground(PaintEventArgs e)
 	}
 }
 
+// Handle message -> call from user
 void Window::WndProc(Message m)
 {
 	Control* focusing = this->Focusing;
@@ -245,4 +299,26 @@ void Window::WndProc(Message m)
 
 	// call to parent method
 	//Control::WndProc(m);
+}
+
+// Handle App call -> call from application
+void Window::WndProcAppMessage(int AppMess)
+{
+	switch(AppMess)
+	{
+	case Application::WindowStart:
+		this->OnStart();
+		break;
+	case Application::WindowResume:
+		this->OnResume();
+		break;
+	case Application::WindowPause:
+		this->OnPause();
+		break;
+	case Application::WindowStop:
+		this->OnStop();
+		break;
+	default:
+		PRINTF("Handle fault message\r\n");
+	}
 }

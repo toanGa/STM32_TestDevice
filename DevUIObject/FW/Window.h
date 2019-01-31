@@ -3,12 +3,14 @@
 class Window :
 	public Control
 {
+private:
+	void* App;
 public:
 	Window();
 	~Window();
 	void Start();
 	void Stop();
-
+	void Dispose();
 	EventHandler WindowCreate;
 	EventHandler WindowStart;
 	EventHandler WindowResume;
@@ -46,5 +48,6 @@ public:
 
 	// need protected
 	virtual void WndProc(Message m);
+	void WndProcAppMessage(int AppMess);
 };
 

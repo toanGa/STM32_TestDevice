@@ -1,16 +1,17 @@
 #pragma once
 #include "EventArgs.h"
-#include "SYSCALL/syscall.h"
+//#include "SYSCALL/syscall.h"
 
+// temp define  -> debug only
+#define TimerObject    int
+#define PTimerObject   TimerObject*
 class Timer
 {
 private:
 	TimerObject TimerObj;
 
 private:
-	static void SysCallback(HANDLE PTimerObj);
-	static Timer* FindTimer(PTimerObject TimerObj,int* Index);
-	bool CreateSystemTimer();
+
 public:
 	Timer();
 	Timer(int interval, EventHandler Tick);
@@ -19,6 +20,7 @@ public:
 	char* Name;
 	bool IsEnabled();
 	void Enable(bool enable);
+	void Dispose();
 	void SetInterval(int interval);
 	int GetInterval();
 

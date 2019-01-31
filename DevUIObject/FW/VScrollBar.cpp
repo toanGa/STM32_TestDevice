@@ -4,6 +4,9 @@
 
 VScrollBar::VScrollBar()
 {
+	Name = (char*)"VScrollBar";
+	ControlType = ControlVScrollBar;
+
 	BackColor = GUI_GRAY;
 	colorPointer = GUI_WHITE;
 	sizePointer = 5;

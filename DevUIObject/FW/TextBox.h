@@ -7,16 +7,20 @@
 class TextBox :
 	public Control
 {
+public:
+	typedef enum
+	{
+		TextTypeNormal = 0,
+		TextTypeName = 1,
+		TextTypeNumber = 2
+	}ETextType;
 private:
 	#define MAX_TEXT 2019
 
 	uint32_t colorWrap;
 	uint16_t distanceText;
 	uint8_t isMultiLine;
-	// 0: 019497493
-	// 1: Toi di hoc
-	// 2: Tran Van Toan
-	uint8_t isTypeTextName; // isTypeTextName = 0 - 1 - 2
+
 	bool enableScrollBar;
 	uint16_t alignLeft;
 	uint16_t alignRight;
@@ -79,10 +83,17 @@ protected:
 	int heightPtr;
 	VScrollBar vScrollBar;
 public:
+	// 0: Toi di hoc
+	// 1: Tran Van Toan
+	// 2: 01668709165
+	ETextType TextType; // isTypeTextName = 0 - 1 - 2
+	Color BoderColor;
+
 	TextBox();
 	~TextBox();
 	virtual void SetText(char* content);
 	virtual void SetText(uint16_t*);
+	uint16_t* Text();
 	virtual int GetTextSize();
 	virtual bool SetTextSize(int size);
 	void SetLocation(GDI::Point location);
@@ -94,7 +105,7 @@ public:
 	bool IsEnabledMultiLine();
 	void EnableBoder(bool value);
 	bool IsEnabledBoder();
-	Color BoderColor;
+
 protected:
 	virtual void OnKeyDown(KeyEventArgs e);
 	virtual void OnKeyPress(KeyEventArgs e);

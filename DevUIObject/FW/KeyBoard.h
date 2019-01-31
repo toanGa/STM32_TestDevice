@@ -92,22 +92,17 @@ public:
 	uint8_t getPhoneNumberOnly(uint16_t *string, int16_t sizeOf,
 		uint8_t keyIsPressed, int16_t *pointIndex);
 	uint8_t getMsgContent(uint16_t *string, int16_t sizeOf, uint8_t keyIsPressed,
-		int16_t* pressType, int16_t *pointIndex, uint8_t isTextName);
-	void clearUCS2Content(uint16_t *string, int16_t* pressType,
+			int16_t *pointIndex, uint8_t isTextName);
+	void clearUCS2Content(uint16_t *string,
 		int16_t *pointIndex);
-	void forceClearUnicode(uint16_t *string,
-		int16_t* pressType,
-		int16_t *pointIndex);
-	void pressTypeChangeAuto(uint16_t *string, int16_t* pressType,
-		int16_t *pointIndex);
-	void pressTypeNameChangeAuto(uint16_t *string, int16_t* pressType,
-		int16_t *pointIndex);
+	void forceClearUnicode(uint16_t *string, int16_t *pointIndex);
+	void pressTypeChangeAuto(uint16_t *string, int16_t *pointIndex);
+	void pressTypeNameChangeAuto(uint16_t *string, int16_t *pointIndex);
 	int16_t getPressTypeDefaultStart();
 	uint8_t checkEnableChangeTheFirstUppercase(uint16_t *string,
 		int16_t *pointIndex);
 	uint8_t checkEnableNewName(uint16_t *string, int16_t *pointIndex);
 	void changePressType(uint16_t *string,
-		int16_t* pressType,
 		int16_t *pointIndex);
 	uint16_t strlenBeforeEncodeEmoji(uint16_t* content);
 	void setInvolkNewkey();

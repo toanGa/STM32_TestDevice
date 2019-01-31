@@ -19,6 +19,7 @@ namespace GDI
 		~Draw();
 		static void DrawPicture(Image img, int x, int y);
 		static void DrawPicture(Image img, int x, int y, int x1, int y1, int x2, int y2);
+		static void DrawPicture(Image img, int x, int y, Rectangle baud);
 		static void DrawPicture(Image img, Point location);
 		static void DrawRect(Rectangle rect, Color color);
 		static void DrawRectTransparent(Rectangle rect, Color color);
@@ -29,6 +30,7 @@ namespace GDI
 		static void DrawString(Rectangle baud, const char* text, Font font, Color color);
 		static void DrawString(Rectangle baud, const uint16_t* text, Font font, Color color);
 		static void DrawStringFixedLen( int x, int y, const uint16_t* text, int numsCharacter, Font font, Color color);
+		static int  PixelLen(uint16_t* text, Font font);
 
 		static void OnShowScreen(Rectangle rect);
 	//protected:

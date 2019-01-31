@@ -11,27 +11,27 @@ void Control::CallBackControlTimer(void* sender, EventArgs e)
 {
 	// TODO: implement here\r\n
 	PRINTF("OnControlTimer\r\n");
+
 	// Find window active -> Global list window
+	// TODO; temporary to handler by state management
+	// will be changed by change window management
+	//void CurrUserWindowHanler();
 
-	static int fake = 1;
-	if(fake)
-	{
-		void WindowProcTimer();
-		WindowProcTimer();
-	}
-
-	// Send message to window
+	//CurrUserWindowHanler();
 }
 
 Control::Control()
 {
     Name = (char*)"Control";
     ControlType = ControlBase;
+    IsDisposed = false;
 	MasterControl = NULL;
 	Focusing = NULL;
 	Visible = true;
 	Enable = true;
+
     Text = NULL;
+    UnicodeText = false;
 	SetTextSize(DEFAULT_TEXT_SIZE);
 	FontText = FONT_USSD;
 
@@ -41,6 +41,7 @@ Control::Control()
     KeyUp = NULL;
 	AppropFocus = NULL;
 	LostFocus = NULL;
+	Disposed = NULL;
 
 	Width = 0;
 	Height = 0;
@@ -71,317 +72,325 @@ Control::Control()
 
 Control::~Control()
 {
-	if (Text != NULL)
-	{
-		free(Text);
-	}
+	this->Dispose();
 }
 
 void Control::EnableControlTimer(bool enable)
 {
 	ControlTimer.Enable(enable);
-//	if(ControlTimer != NULL)
-//	{
-//		ControlTimer->Enable(enable);
-//	}
 }
 
 // Handler all event
 void Control::WndProc(Message m)
 {
 	// TODO: implement detail argument
-	EventArgs e;
-	KeyEventArgs kE;
-	// fake
-	
-	switch (m.Msg)
+	if(IsEnabled())
 	{
-	case Message::MessageKB0Up:
-		kE.KeyChar = '0';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB0Down:
-		kE.KeyChar = '0';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB0Press:
-		kE.KeyChar = '0';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB1Up:
-		kE.KeyChar = '1';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB1Down:
-		kE.KeyChar = '1';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB1Press:
-		kE.KeyChar = '1';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB2Up:
-		kE.KeyChar = '2';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB2Down:
-		kE.KeyChar = '2';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB2Press:
-		kE.KeyChar = '2';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB3Up:
-		kE.KeyChar = '3';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB3Down:
-		kE.KeyChar = '3';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB3Press:
-		kE.KeyChar = '3';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB4Up:
-		kE.KeyChar = '4';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB4Down:
-		kE.KeyChar = '4';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB4Press:
-		kE.KeyChar = '4';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB5Up:
-		kE.KeyChar = '5';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB5Down:
-		kE.KeyChar = '5';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB5Press:
-		kE.KeyChar = '5';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB6Up:
-		kE.KeyChar = '6';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB6Down:
-		kE.KeyChar = '6';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB6Press:
-		kE.KeyChar = '6';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB7Up:
-		kE.KeyChar = '7';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB7Down:
-		kE.KeyChar = '7';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB7Press:
-		kE.KeyChar = '7';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB8Up:
-		kE.KeyChar = '8';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB8Down:
-		kE.KeyChar = '8';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB8Press:
-		kE.KeyChar = '8';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKB9Up:
-		kE.KeyChar = '9';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKB9Down:
-		kE.KeyChar = '9';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKB9Press:
-		kE.KeyChar = '9';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBStarUp:
-		kE.KeyChar = '*';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBStarDown:
-		kE.KeyChar = '*';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBStarPress:
-		kE.KeyChar = '*';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBHashtagUp:
-		kE.KeyChar = '#';
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBHashtagDown:
-		kE.KeyChar = '#';
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBHashtagPress:
-		kE.KeyChar = '#';
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBUpUp:
-		kE.KeyChar = KEYUP;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBUpDown:
-		kE.KeyChar = KEYUP;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBUpPress:
-		kE.KeyChar = KEYUP;
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBDownUp:
-		kE.KeyChar = KEYDOWN;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBDownDown:
-		kE.KeyChar = KEYDOWN;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBDownPress:
-		kE.KeyChar = KEYDOWN;
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBLeftUp:
-		kE.KeyChar = KEYLEFT;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBLeftDown:
-		kE.KeyChar = KEYLEFT;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBLeftPress:
-		kE.KeyChar = KEYLEFT;
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBRightUp:
-		kE.KeyChar = KEYRIGHT;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBRightDown:
-		kE.KeyChar = KEYRIGHT;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBRightPress:
-		kE.KeyChar = KEYRIGHT;
-		OnKeyPress(kE);
-		break;
+		EventArgs e;
+		KeyEventArgs kE;
+		// fake
+
+		switch (m.Msg)
+		{
+		case Message::MessageKB0Up:
+			kE.KeyChar = '0';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB0Down:
+			kE.KeyChar = '0';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB0Press:
+			kE.KeyChar = '0';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB1Up:
+			kE.KeyChar = '1';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB1Down:
+			kE.KeyChar = '1';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB1Press:
+			kE.KeyChar = '1';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB2Up:
+			kE.KeyChar = '2';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB2Down:
+			kE.KeyChar = '2';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB2Press:
+			kE.KeyChar = '2';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB3Up:
+			kE.KeyChar = '3';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB3Down:
+			kE.KeyChar = '3';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB3Press:
+			kE.KeyChar = '3';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB4Up:
+			kE.KeyChar = '4';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB4Down:
+			kE.KeyChar = '4';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB4Press:
+			kE.KeyChar = '4';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB5Up:
+			kE.KeyChar = '5';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB5Down:
+			kE.KeyChar = '5';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB5Press:
+			kE.KeyChar = '5';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB6Up:
+			kE.KeyChar = '6';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB6Down:
+			kE.KeyChar = '6';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB6Press:
+			kE.KeyChar = '6';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB7Up:
+			kE.KeyChar = '7';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB7Down:
+			kE.KeyChar = '7';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB7Press:
+			kE.KeyChar = '7';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB8Up:
+			kE.KeyChar = '8';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB8Down:
+			kE.KeyChar = '8';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB8Press:
+			kE.KeyChar = '8';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKB9Up:
+			kE.KeyChar = '9';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKB9Down:
+			kE.KeyChar = '9';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKB9Press:
+			kE.KeyChar = '9';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBStarUp:
+			kE.KeyChar = '*';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBStarDown:
+			kE.KeyChar = '*';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBStarPress:
+			kE.KeyChar = '*';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBHashtagUp:
+			kE.KeyChar = '#';
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBHashtagDown:
+			kE.KeyChar = '#';
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBHashtagPress:
+			kE.KeyChar = '#';
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBUpUp:
+			kE.KeyChar = KEYUP;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBUpDown:
+			kE.KeyChar = KEYUP;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBUpPress:
+			kE.KeyChar = KEYUP;
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBDownUp:
+			kE.KeyChar = KEYDOWN;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBDownDown:
+			kE.KeyChar = KEYDOWN;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBDownPress:
+			kE.KeyChar = KEYDOWN;
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBLeftUp:
+			kE.KeyChar = KEYLEFT;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBLeftDown:
+			kE.KeyChar = KEYLEFT;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBLeftPress:
+			kE.KeyChar = KEYLEFT;
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBRightUp:
+			kE.KeyChar = KEYRIGHT;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBRightDown:
+			kE.KeyChar = KEYRIGHT;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBRightPress:
+			kE.KeyChar = KEYRIGHT;
+			OnKeyPress(kE);
+			break;
+
+		case Message::MessageKBEnterUp:
+			kE.KeyChar = KEYENTER;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBEnterDown:
+			kE.KeyChar = KEYENTER;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBEnterPress:
+			kE.KeyChar = KEYENTER;
+			OnKeyPress(kE);
+			break;
+
+		case Message::MessageKBLeftSelectUp:
+			kE.KeyChar = KEYLEFTSELECT;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBLeftSelectDown:
+			kE.KeyChar = KEYLEFTSELECT;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBLeftSelectPress:
+			kE.KeyChar = KEYLEFTSELECT;
+			OnKeyPress(kE);
+			break;
+
+		case Message::MessageKBRightSelectUp:
+			kE.KeyChar = KEYRIGHTSELECT;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBRightSelectDown:
+			kE.KeyChar = KEYRIGHTSELECT;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBRightSelectPress:
+			kE.KeyChar = KEYRIGHTSELECT;
+			OnKeyPress(kE);
+			break;
 
 
-	case Message::MessageKBLeftSelectUp:
-		kE.KeyChar = KEYLEFTSELECT;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBLeftSelectDown:
-		kE.KeyChar = KEYLEFTSELECT;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBLeftSelectPress:
-		kE.KeyChar = KEYLEFTSELECT;
-		OnKeyPress(kE);
-		break;
-
-	case Message::MessageKBRightSelectUp:
-		kE.KeyChar = KEYRIGHTSELECT;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBRightSelectDown:
-		kE.KeyChar = KEYRIGHTSELECT;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBRightSelectPress:
-		kE.KeyChar = KEYRIGHTSELECT;
-		OnKeyPress(kE);
-		break;
-
-
-	case Message::MessageKBHomeUp:
-		kE.KeyChar = KEYHOME;
-		OnKeyUp(kE);
-		break;// end call
-	case Message::MessageKBHomeDown:
-		kE.KeyChar = KEYHOME;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBHomePress:
-		kE.KeyChar = KEYHOME;
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBCallUp:
-		kE.KeyChar = KEYCALL;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBCallDown:
-		kE.KeyChar = KEYCALL;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBCallPress:
-		kE.KeyChar = KEYCALL;
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBVolupUp:
-		kE.KeyChar = KEYVOLUP;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBVolupDown:
-		kE.KeyChar = KEYVOLUP;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBVolupPress:
-		kE.KeyChar = KEYVOLUP;
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBVoldownUp:
-		kE.KeyChar = KEYVOLDOWN;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBVoldownDown:
-		kE.KeyChar = KEYVOLDOWN;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBVoldownPress:
-		kE.KeyChar = KEYVOLDOWN;
-		OnKeyPress(kE);
-		break;
-	case Message::MessageKBPowerUp:
-		kE.KeyChar = KEYPOWER;
-		OnKeyUp(kE);
-		break;
-	case Message::MessageKBPowerDown:
-		kE.KeyChar = KEYPOWER;
-		OnKeyDown(kE);
-		break;
-	case Message::MessageKBPowerPress:
-		kE.KeyChar = KEYPOWER;
-		OnKeyPress(kE);
-		break;
-	case Message::MessageTimer:
-		OnControlTimer(e);
-		break;
-	default:
-		break;
+		case Message::MessageKBHomeUp:
+			kE.KeyChar = KEYHOME;
+			OnKeyUp(kE);
+			break;// end call
+		case Message::MessageKBHomeDown:
+			kE.KeyChar = KEYHOME;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBHomePress:
+			kE.KeyChar = KEYHOME;
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBCallUp:
+			kE.KeyChar = KEYCALL;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBCallDown:
+			kE.KeyChar = KEYCALL;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBCallPress:
+			kE.KeyChar = KEYCALL;
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBVolupUp:
+			kE.KeyChar = KEYVOLUP;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBVolupDown:
+			kE.KeyChar = KEYVOLUP;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBVolupPress:
+			kE.KeyChar = KEYVOLUP;
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBVoldownUp:
+			kE.KeyChar = KEYVOLDOWN;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBVoldownDown:
+			kE.KeyChar = KEYVOLDOWN;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBVoldownPress:
+			kE.KeyChar = KEYVOLDOWN;
+			OnKeyPress(kE);
+			break;
+		case Message::MessageKBPowerUp:
+			kE.KeyChar = KEYPOWER;
+			OnKeyUp(kE);
+			break;
+		case Message::MessageKBPowerDown:
+			kE.KeyChar = KEYPOWER;
+			OnKeyDown(kE);
+			break;
+		case Message::MessageKBPowerPress:
+			kE.KeyChar = KEYPOWER;
+			OnKeyPress(kE);
+			break;
+		case Message::MessageTimer:
+			OnControlTimer(e);
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -394,7 +403,7 @@ void Control::OnTextChanged(EventArgs e)
 {
 	if (TextChanged != NULL)
 	{
-		TextChanged(this, e);
+		(this->*TextChanged)(this, e);
 	}
 }
 
@@ -417,7 +426,7 @@ void Control::OnKeyDown(KeyEventArgs e)
 
 	if (KeyDown != NULL)
 	{
-		KeyDown(this, e);
+		(this->*KeyDown)(this, e);
 	}
 }
 
@@ -440,7 +449,7 @@ void Control::OnKeyPress(KeyEventArgs e)
 
 	if (KeyPress != NULL)
 	{
-		KeyPress(this, e);
+		(this->*KeyPress)(this, e);
 	}
 }
 
@@ -449,7 +458,7 @@ void Control::OnKeyUp(KeyEventArgs e)
 	PRINTF("%s Control::OnKeyUp\r\n", this->Name);
 	if (KeyUp != NULL)
 	{
-		KeyUp(this, e);
+		(this->*KeyUp)(this, e);
 	}
 }
 
@@ -470,7 +479,7 @@ void Control::OnLostFocus(EventArgs e)
 {
 	if (LostFocus != NULL)
 	{
-		LostFocus(this, e);
+		(this->*LostFocus)(this, e);
 	}
 }
 
@@ -478,7 +487,7 @@ void Control::OnAppropFocus(EventArgs e)
 {
 	if (AppropFocus != NULL)
 	{
-		AppropFocus(this, e);
+		(this->*AppropFocus)(this, e);
 	}
 }
 
@@ -499,7 +508,7 @@ void Control::OnUpdateControl(Control * control)
 	{
 		// TODO: confirm rectangle
 		// update window: draw
-		this->DisplayRectangle = control->DisplayRectangle;
+		this->DisplayRectangle = GDI::Rectangle(control->RelativeLocation(), control->DisplayRectangle.Width, control->DisplayRectangle.Height);
 		this->Update();
 
 		// update control: draw
@@ -582,7 +591,37 @@ void Control::OnDrawControl(Control * control)
 		control->OnPaintBackground(pArg);
 		control->OnPaint(pArg);
 	}
+}
 
+void Control::OnDisposeControl(Control * control)
+{
+	if ((this->ControlType == this->ControlWindow) && control->Visible)
+	{
+		// TODO: confirm rectangle
+		this->DisplayRectangle = control->DisplayRectangle;
+		this->Update();
+
+		control->Visible = false;
+
+		// Donot update UI if not visible
+		//PaintEventArgs pArg;
+		//pArg.PaintOption = PaintEventArgs::PaintHideControl;
+
+		//control->OnPaintBackground(pArg);
+		//control->OnPaint(pArg);
+
+		if (this->Focusing == control)
+		{
+			bool focusStat = this->FocusNextControl(true);
+			if (!focusStat)
+			{
+				this->FocusNextControl(false);
+			}
+		}
+
+		// show on screen
+		GDI::Draw::OnShowScreen(this->DisplayRectangle);
+	}
 }
 
 // Multi window control -> implement later
@@ -620,9 +659,19 @@ void Control::Add(Control * value)
 	}
 	else
 	{
-		if (value->TabIndex < Focusing->TabIndex)
+		if (Focusing->TabIndex < 1)
 		{
-			Focusing = value;
+			if (value->TabIndex > 0)
+			{
+				Focusing = value;
+			}
+		}
+		else
+		{
+			if ((value->TabIndex < Focusing->TabIndex) && (value->TabIndex > 0))
+			{
+				Focusing = value;
+			}
 		}
 	}
 }
@@ -644,6 +693,7 @@ void Control::Remove(Control * value)
 			{
 				ListControlAdded.erase(ListControlAdded.begin() + i);
 				value->MasterControl = NULL;
+				break;
 			}
 		}
 	}
@@ -665,7 +715,7 @@ Control * Control::GetNextControl(Control * ctl, bool forward)
 			int i;
 			for (i = 0; i < totalControl; i++)
 			{
-				if ( (ListControlAdded.at(i) != ctl) && (ListControlAdded.at(i)->TabIndex >= oldTabIdx) && (ListControlAdded.at(i)->Visible))
+				if ( (ListControlAdded.at(i) != ctl) && (ListControlAdded.at(i)->TabIndex > 0) && (ListControlAdded.at(i)->TabIndex >= oldTabIdx) && (ListControlAdded.at(i)->Visible))
 				{
 					if (first)
 					{
@@ -690,7 +740,7 @@ Control * Control::GetNextControl(Control * ctl, bool forward)
 			int i;
 			for (i = 0; i < totalControl; i++)
 			{
-				if ( (ListControlAdded.at(i) != ctl) && (ListControlAdded.at(i)->TabIndex <= oldTabIdx) && (ListControlAdded.at(i)->Visible))
+				if ( (ListControlAdded.at(i) != ctl) && (ListControlAdded.at(i)->TabIndex > 0) && (ListControlAdded.at(i)->TabIndex <= oldTabIdx) && (ListControlAdded.at(i)->Visible))
 				{
 					if (first)
 					{
@@ -814,6 +864,7 @@ void Control::Show()
 		}
 		else
 		{
+			wd->Visible = true;
 			wd->Refresh();
 		}
 	}
@@ -831,9 +882,36 @@ void Control::Draw()
 // Implement
 void Control::Dispose()
 {
-	this->Enable = false;
+	if(!IsDisposed)
+	{
+		this->Enable = false;
 
-	// clean resource
+		// clean resource
+		if (Text != NULL)
+		{
+			free(Text);
+			Text = NULL;
+		}
+		IsDisposed = true;
+	}
+
+	Control* wd = FindWindow();
+	if (wd != NULL && this->ControlType != ControlWindow)
+	{
+		wd->OnDisposeControl(this);
+	}
+	else
+	{
+		// dispose for window
+		// if main ui -> dispose for all window of application
+	}
+
+	if(this->Disposed != NULL)
+	{
+		// TODO: Implement detail
+		EventArgs e;
+		(this->*Disposed)(this, e);
+	}
 }
 
 bool Control::Focus()
@@ -873,6 +951,39 @@ bool Control::IsFocusing()
 	return false;
 }
 
+void Control::Enabled(bool value)
+{
+	this->Enable = value;
+	// TODO: Implement action when set enable true or false
+
+}
+
+bool Control::IsEnabled()
+{
+	return this->Enable;
+}
+
+void Control::SuspendLayout()
+{
+	// TODO: implement
+
+}
+
+void Control::ResumeLayout()
+{
+	// TODO: implement
+}
+
+void Control::ResumeLayout(bool performLayout)
+{
+	// TODO: implement
+}
+
+void Control::PerformLayout()
+{
+	// TODO: implement
+}
+
 // return if fined window
 // return itselt if it is window
 Control * Control::FindWindow()
@@ -901,6 +1012,34 @@ Control * Control::FindWindow()
 	return NULL;
 }
 
+Control* Control::FindMaster()
+{
+	if(this->MasterControl != NULL)
+	{
+		return this->MasterControl;
+	}
+	// return NULL if it have no master control
+	return NULL;
+}
+
+Control * Control::FindControl(char * name)
+{
+	Control* control = NULL;
+	Control* wd = this->FindWindow();
+
+	int numControls = wd->ListControlAdded.size();
+	int i;
+	for (i = 0; i < numControls; i++)
+	{
+		if (strcmp(name, wd->ListControlAdded.at(i)->Name) == 0)
+		{
+			control = wd->ListControlAdded.at(i);
+			break;
+		}
+	}
+	return control;
+}
+
 // Text has dynamic allocation
 // Text must be private
 char * Control::GetText()
@@ -910,7 +1049,22 @@ char * Control::GetText()
 
 void Control::SetText(char * content)
 {
+	this->UnicodeText = false;
+	// todo: Check len, realloc
+
 	strcpy(Text, content);
+}
+
+void Control::SetText(uint16_t* content)
+{
+	this->UnicodeText = true;
+	// todo: Check len, realloc
+	unicpy((uint16_t*)Text, content);
+}
+
+bool Control::IsUnicodeText()
+{
+	return UnicodeText;
 }
 
 // size in byte
@@ -959,7 +1113,7 @@ void Control::Refresh()
 			ListControlAdded.at(i)->OnPaintBackground(pE);
 			ListControlAdded.at(i)->OnPaint(pE);
 		}
-		// draw child component
+		this->DisplayRectangle = ControlRectangle();
 		// show on screen: show
 		GDI::Draw::OnShowScreen(this->DisplayRectangle);
 	}

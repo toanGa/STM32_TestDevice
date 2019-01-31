@@ -16,18 +16,18 @@
  *@parameter: userStatePtr
  *@return   : none
  */
-Window* window;
+Window* window = NULL;
 Label* lable1;
 Label *lable2;
 TextBox* textbox1;
 TextBox* textbox2;
 
-void LostFocus(void* sender, EventArgs e)
+static void LostFocus(void* sender, EventArgs e)
 {
 	PRINTF("%s Lost focus\r\n", ((Control*)sender)->Name);
 }
 
-void AppropFocus(void* sender, EventArgs e)
+static void AppropFocus(void* sender, EventArgs e)
 {
 	PRINTF("%s Approp focus\r\n", ((Control*)sender)->Name);
 }
@@ -107,7 +107,10 @@ void keyboardFunc(char key)
 	default:
 		return;
 	}
-	window->WndProc(m);
+	if(window != NULL)
+	{
+		window->WndProc(m);
+	}
 }
 
 void keyboardTest (userStatePtr* state)
@@ -131,8 +134,8 @@ void keyboardTest (userStatePtr* state)
 		lable1->DisplayRectangle = GDI::Rectangle(lable1->Location, lable1->Width, lable1->Height);
 		lable1->ForeColor = GUI_WHITE;
 		lable1->SetText("this is lable 1");
-		lable1->LostFocus = LostFocus;
-		lable1->AppropFocus = AppropFocus;
+		//lable1->LostFocus = LostFocus;
+		//lable1->AppropFocus = AppropFocus;
 		lable1->TabIndex = 1;
 
 
@@ -141,8 +144,8 @@ void keyboardTest (userStatePtr* state)
 		lable2->DisplayRectangle = GDI::Rectangle(lable2->Location, lable2->Width, lable2->Height);
 		lable2->ForeColor = GUI_RED;
 		lable2->SetText("this is lable 2");
-		lable2->LostFocus = LostFocus;
-		lable2->AppropFocus = AppropFocus;
+		//lable2->LostFocus = LostFocus;
+		//lable2->AppropFocus = AppropFocus;
 		lable2->TabIndex = 2;
 
 
@@ -152,8 +155,8 @@ void keyboardTest (userStatePtr* state)
 		textbox1->SetSize(textbox1->Width, 50);
 		textbox1->EnableScrollBar(true);
 		textbox1->EnableMultiLine(true);
-		textbox1->LostFocus = LostFocus;
-		textbox1->AppropFocus = AppropFocus;
+		//textbox1->LostFocus = LostFocus;
+		//textbox1->AppropFocus = AppropFocus;
 		textbox1->TabIndex = 3;
 
 
@@ -163,8 +166,8 @@ void keyboardTest (userStatePtr* state)
 		textbox2->SetSize(textbox1->Width/2, 100);
 		textbox2->EnableScrollBar(true);
 		textbox2->EnableMultiLine(true);
-		textbox2->LostFocus = LostFocus;
-		textbox2->AppropFocus = AppropFocus;
+		//textbox2->LostFocus = LostFocus;
+		//textbox2->AppropFocus = AppropFocus;
 		textbox2->TabIndex = 4;
 
 		window->Add(lable1);
@@ -173,7 +176,7 @@ void keyboardTest (userStatePtr* state)
 		window->Add(textbox2);
 
 		window->Start();
-
+		textbox1->Focus();
 //		lable1->Show();
 //		lable2->Show();
 //		textbox1->Show();

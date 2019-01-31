@@ -80,6 +80,10 @@ public:
 		MessageKBRightDown,
 		MessageKBRightPress,
 
+		MessageKBEnterUp,
+		MessageKBEnterDown,
+		MessageKBEnterPress,
+
 		MessageKBLeftSelectUp,
 		MessageKBLeftSelectDown,
 		MessageKBLeftSelectPress,

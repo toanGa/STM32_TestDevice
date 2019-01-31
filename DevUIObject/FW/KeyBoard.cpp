@@ -1,6 +1,5 @@
 #include "KeyBoard.h"
 #include <string.h>
-#include "ti/sysbios/knl/Clock.h"
 #include "TextInfo.h"
 
 const uint16_t KeyBoard::g_EngUppercase[KEY_MESS_NUMBER][KEY_MESS_LENGTH] =
@@ -101,7 +100,7 @@ const uint16_t KeyBoard::vowel_low[VOWEL_NUM_OF_CHAR][VOWEL_SIZE_CHAR] =
 { 5, es, ef, er, ex, ej },
 { 5, ees, eef, eer, eex, eej },
 { 5, is, 0x00EC, ir, ix, ij },
-{ 5, os, of, __or , ox, oj },
+{ 5, os, of, or , ox, oj },
 { 5, oos, oof, oor, oox, ooj },
 { 5, ows, owf, owr, owx, owj },
 { 5, us, uf, ur, ux, uj },
@@ -450,12 +449,16 @@ uint8_t KeyBoard::getPhoneNumberOnly(uint16_t * string, int16_t sizeOf, uint8_t 
 	return mIsAddNewKey;
 }
 
-uint8_t KeyBoard::KeyBoard::getMsgContent(uint16_t *string, int16_t sizeOf, uint8_t keyIsPressed,
-	int16_t* pressType, int16_t *pointIndex, uint8_t isTextName)
+uint8_t KeyBoard::KeyBoard::getMsgContent(uint16_t *string, int16_t sizeOf,
+		uint8_t keyIsPressed, int16_t *pointIndex, uint8_t isTextName)
 {
+	if (isTextName == 2)
+	{
+		PressType = PRESS_TYPES_NUMBER_ONLY;
+	}
 	mIsAddNewKey = 1;
 
-	if ((*pressType >= PRESS_TYPE_VI_LOWERCASE && *pressType <= PRESS_TYPE_VI_UPPERCASE_ALL)
+	if ((PressType >= PRESS_TYPE_VI_LOWERCASE && PressType <= PRESS_TYPE_VI_UPPERCASE_ALL)
 		&& keyIsPressed == '*')
 	{
 		// add: fix bug when *pointIndex = -1
@@ -477,13 +480,13 @@ uint8_t KeyBoard::KeyBoard::getMsgContent(uint16_t *string, int16_t sizeOf, uint
 	}
 	else
 	{
-		switch (*pressType)
+		switch (PressType)
 		{
 		case PRESS_TYPE_EN_UPPERCASE_FIRST:
 			mIsAddNewKey = getContentEng(string, sizeOf, keyIsPressed, pointIndex,
 				(uint16_t*)&g_EngUppercase[0][0]);
 			mUppercaseFirstIsPressed = 1; // is pressed
-			*pressType = PRESS_TYPE_EN_LOWERCASE;
+			PressType = PRESS_TYPE_EN_LOWERCASE;
 			break;
 
 		case PRESS_TYPE_EN_UPPERCASE_ALL:
@@ -514,7 +517,7 @@ uint8_t KeyBoard::KeyBoard::getMsgContent(uint16_t *string, int16_t sizeOf, uint
 			mIsAddNewKey = getContentEng(string, sizeOf, keyIsPressed, pointIndex,
 				(uint16_t*)&g_VietUppercase[0][0]);
 			mUppercaseFirstIsPressed = 1; // is pressed
-			*pressType = PRESS_TYPE_VI_LOWERCASE;
+			PressType = PRESS_TYPE_VI_LOWERCASE;
 			break;
 
 		case PRESS_TYPE_VI_UPPERCASE_ALL:
@@ -544,19 +547,18 @@ uint8_t KeyBoard::KeyBoard::getMsgContent(uint16_t *string, int16_t sizeOf, uint
 
 	if (0 == isTextName)
 	{
-		pressTypeChangeAuto(string, pressType, pointIndex);
+		pressTypeChangeAuto(string, pointIndex);
 	}
 	else
 	{
-		pressTypeNameChangeAuto(string, pressType, pointIndex);
+		pressTypeNameChangeAuto(string, pointIndex);
 	}
 
 	return mIsAddNewKey;
 }
 
 
-void KeyBoard::clearUCS2Content(uint16_t *string, int16_t* pressType,
-	int16_t *pointIndex)
+void KeyBoard::clearUCS2Content(uint16_t *string, int16_t *pointIndex)
 {
 	int16_t stringLength = unilen(string);
 	int16_t stringIndex = *pointIndex;
@@ -595,9 +597,7 @@ void KeyBoard::clearUCS2Content(uint16_t *string, int16_t* pressType,
 		(*pointIndex)--;
 	}
 }
-void KeyBoard::forceClearUnicode(uint16_t *string,
-	int16_t* pressType,
-	int16_t *pointIndex)
+void KeyBoard::forceClearUnicode(uint16_t *string, int16_t *pointIndex)
 {
 	int16_t stringLength = unilen(string);
 	int16_t stringIndex = *pointIndex;
@@ -620,21 +620,20 @@ void KeyBoard::forceClearUnicode(uint16_t *string,
 	}
 }
 
-void KeyBoard::pressTypeChangeAuto(uint16_t *string, int16_t* pressType,
-	int16_t *pointIndex)
+void KeyBoard::pressTypeChangeAuto(uint16_t *string, int16_t *pointIndex)
 {
 	uint8_t enableChangePressType = checkEnableChangeTheFirstUppercase(string,
 		pointIndex);
 	if (enableChangePressType)
 	{
-		switch (*pressType)
+		switch (PressType)
 		{
 		case PRESS_TYPE_EN_UPPERCASE_FIRST:
 			break;
 		case PRESS_TYPE_EN_UPPERCASE_ALL:
 			break;
 		case PRESS_TYPE_EN_LOWERCASE:
-			*pressType = PRESS_TYPE_EN_UPPERCASE_FIRST;
+			PressType = PRESS_TYPE_EN_UPPERCASE_FIRST;
 			break;
 		case PRESS_TYPES_NUMBER_ONLY:
 			break;
@@ -643,7 +642,7 @@ void KeyBoard::pressTypeChangeAuto(uint16_t *string, int16_t* pressType,
 		case PRESS_TYPE_VI_UPPERCASE_ALL:
 			break;
 		case PRESS_TYPE_VI_LOWERCASE:
-			*pressType = PRESS_TYPE_VI_UPPERCASE_FIRST;
+			PressType = PRESS_TYPE_VI_UPPERCASE_FIRST;
 			break;
 		default:
 			break;
@@ -652,10 +651,10 @@ void KeyBoard::pressTypeChangeAuto(uint16_t *string, int16_t* pressType,
 	}
 	else
 	{
-		switch (*pressType)
+		switch (PressType)
 		{
 		case PRESS_TYPE_EN_UPPERCASE_FIRST:
-			*pressType = PRESS_TYPE_EN_LOWERCASE;
+			PressType = PRESS_TYPE_EN_LOWERCASE;
 			break;
 		case PRESS_TYPE_EN_UPPERCASE_ALL:
 			break;
@@ -664,7 +663,7 @@ void KeyBoard::pressTypeChangeAuto(uint16_t *string, int16_t* pressType,
 		case PRESS_TYPES_NUMBER_ONLY:
 			break;
 		case PRESS_TYPE_VI_UPPERCASE_FIRST:
-			*pressType = PRESS_TYPE_VI_LOWERCASE;
+			PressType = PRESS_TYPE_VI_LOWERCASE;
 			break;
 		case PRESS_TYPE_VI_UPPERCASE_ALL:
 			break;
@@ -676,21 +675,20 @@ void KeyBoard::pressTypeChangeAuto(uint16_t *string, int16_t* pressType,
 	}
 }
 
-void KeyBoard::pressTypeNameChangeAuto(uint16_t *string, int16_t* pressType,
-	int16_t *pointIndex)
+void KeyBoard::pressTypeNameChangeAuto(uint16_t *string, int16_t *pointIndex)
 {
 	uint8_t enableChangePressType = 0;
 	enableChangePressType = checkEnableNewName(string, pointIndex);
 	if (enableChangePressType)
 	{
-		switch (*pressType)
+		switch (PressType)
 		{
 		case PRESS_TYPE_EN_UPPERCASE_FIRST:
 			break;
 		case PRESS_TYPE_EN_UPPERCASE_ALL:
 			break;
 		case PRESS_TYPE_EN_LOWERCASE:
-			*pressType = PRESS_TYPE_EN_UPPERCASE_FIRST;
+			PressType = PRESS_TYPE_EN_UPPERCASE_FIRST;
 			break;
 		case PRESS_TYPES_NUMBER_ONLY:
 			break;
@@ -699,7 +697,7 @@ void KeyBoard::pressTypeNameChangeAuto(uint16_t *string, int16_t* pressType,
 		case PRESS_TYPE_VI_UPPERCASE_ALL:
 			break;
 		case PRESS_TYPE_VI_LOWERCASE:
-			*pressType = PRESS_TYPE_VI_UPPERCASE_FIRST;
+			PressType = PRESS_TYPE_VI_UPPERCASE_FIRST;
 			break;
 		default:
 			break;
@@ -708,10 +706,10 @@ void KeyBoard::pressTypeNameChangeAuto(uint16_t *string, int16_t* pressType,
 	}
 	else
 	{
-		switch (*pressType)
+		switch (PressType)
 		{
 		case PRESS_TYPE_EN_UPPERCASE_FIRST:
-			*pressType = PRESS_TYPE_EN_LOWERCASE;
+			PressType = PRESS_TYPE_EN_LOWERCASE;
 			break;
 		case PRESS_TYPE_EN_UPPERCASE_ALL:
 			break;
@@ -720,7 +718,7 @@ void KeyBoard::pressTypeNameChangeAuto(uint16_t *string, int16_t* pressType,
 		case PRESS_TYPES_NUMBER_ONLY:
 			break;
 		case PRESS_TYPE_VI_UPPERCASE_FIRST:
-			*pressType = PRESS_TYPE_VI_LOWERCASE;
+			PressType = PRESS_TYPE_VI_LOWERCASE;
 			break;
 		case PRESS_TYPE_VI_UPPERCASE_ALL:
 			break;
@@ -806,9 +804,7 @@ uint8_t KeyBoard::checkEnableNewName(uint16_t *string, int16_t *pointIndex)
 
 	return 0;
 }
-void KeyBoard::changePressType(uint16_t *string,
-	int16_t* pressType,
-	int16_t *pointIndex)
+void KeyBoard::changePressType(uint16_t *string, int16_t *pointIndex)
 {
 	uint8_t language = getLanguage();
 
@@ -816,10 +812,10 @@ void KeyBoard::changePressType(uint16_t *string,
 	{
 	case VIETNAMESE:
 	case ENGLISH:
-		(*pressType)++;
-		if (*pressType == PRESS_TYPE_END)
+		(PressType)++;
+		if (PressType == PRESS_TYPE_END)
 		{
-			(*pressType) = PRESS_TYPE_EN_LOWERCASE;
+			(PressType) = PRESS_TYPE_EN_LOWERCASE;
 		}
 		break;
 	case FRENCH:
